@@ -220,3 +220,25 @@ Chưa tích hợp SMTP gửi email thật; chưa sẵn sàng cho Production.
 - Dùng lại mã bị từ chối với HTTP 400.
 - Đăng nhập bằng mật khẩu mới thành công.
 - Xác nhận mật khẩu không khớp trả HTTP 400 với lỗi ConfirmPassword.
+## Đổi mật khẩu khi đang đăng nhập
+
+POST /api/v1/auth/change-password
+Authorization: Bearer <accessToken>
+
+Body:
+{
+  "currentPassword": "<mat-khau-hien-tai>",
+  "newPassword": "<mat-khau-moi>",
+  "confirmPassword": "<nhap-lai-mat-khau-moi>"
+}
+
+Đổi thành công sẽ thu hồi tất cả phiên đăng nhập
+và vô hiệu hóa các mã đặt lại mật khẩu chưa sử dụng.
+Người dùng phải đăng nhập lại.
+
+Đã kiểm thử:
+- Không có token: HTTP 401.
+- Đổi mật khẩu hợp lệ: HTTP 200.
+- Token cũ sau khi đổi: HTTP 401.
+- Đăng nhập bằng mật khẩu mới: thành công.
+- Mật khẩu hiện tại sai: HTTP 400.

@@ -108,6 +108,7 @@ if (builder.Environment.IsDevelopment())
     builder.Services.AddScoped<IEmailSender, DevelopmentEmailSender>();
     builder.Services.AddScoped<PasswordResetService>();
 }
+builder.Services.AddScoped<ChangePasswordService>();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
