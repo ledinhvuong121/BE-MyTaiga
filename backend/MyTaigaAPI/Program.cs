@@ -101,7 +101,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddScoped<JwtTokenService>();
 builder.Services.AddScoped<SystemConfigService>();
 builder.Services.AddScoped<AuthService>();
-
+builder.Services.AddScoped<AvatarImageService>();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
