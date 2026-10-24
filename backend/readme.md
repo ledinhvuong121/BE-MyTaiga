@@ -193,4 +193,30 @@ Mã phản hồi:
 
 Chưa kiểm thử riêng userId không hợp lệ và USER gọi unlock.
 ```
+## Quên mật khẩu và đặt lại mật khẩu
 
+- POST /api/v1/auth/forgot-password
+  Body: {"email":"test.user@scrumban.local"}
+  Trả thông báo chung cho email tồn tại và không tồn tại.
+
+- POST /api/v1/auth/reset-password
+  Body: {"token":"<ma-trong-email>","newPassword":"<mat-khau-moi>","confirmPassword":"<nhap-lai-mat-khau-moi>"}
+
+Mã đặt lại mật khẩu có thời hạn, chỉ dùng một lần.
+Database chỉ lưu SHA-256 của mã.
+Đặt lại mật khẩu thành công sẽ thu hồi các phiên đăng nhập cũ.
+
+Trong môi trường Development, email được ghi vào:
+backend/MyTaigaAPI/App_Data/dev-emails/
+
+Các file email thử không được đưa lên Git.
+Mỗi máy tự sinh các file này khi gọi API.
+Chưa tích hợp SMTP gửi email thật; chưa sẵn sàng cho Production.
+
+Đã kiểm thử:
+- Yêu cầu bằng email hợp lệ tạo file email thử.
+- Email không tồn tại nhận cùng thông báo chung.
+- Đặt lại mật khẩu thành công.
+- Dùng lại mã bị từ chối với HTTP 400.
+- Đăng nhập bằng mật khẩu mới thành công.
+- Xác nhận mật khẩu không khớp trả HTTP 400 với lỗi ConfirmPassword.

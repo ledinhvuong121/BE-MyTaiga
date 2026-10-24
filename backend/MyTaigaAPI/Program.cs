@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using MyTaigaAPI.Data;
 using MyTaigaAPI.Services;
 using MyTaigaAPI.Services.Auth;
+using MyTaigaAPI.Services.Email;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -102,6 +103,11 @@ builder.Services.AddScoped<JwtTokenService>();
 builder.Services.AddScoped<SystemConfigService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<AvatarImageService>();
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddScoped<IEmailSender, DevelopmentEmailSender>();
+    builder.Services.AddScoped<PasswordResetService>();
+}
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
