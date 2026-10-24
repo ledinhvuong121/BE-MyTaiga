@@ -2,10 +2,15 @@
 
 ## Phạm vi hiện tại
 
-Khung ASP.NET Core Web API và Entity Framework Core ánh xạ
-database SQL Server. Chưa có API đăng nhập hoặc hồ sơ ở nhánh này.
+Backend ASP.NET Core Web API, Entity Framework Core và SQL Server.
 
-Repository này chỉ chứa backend và script SQL của MyTaiga.
+Đã triển khai:
+- POST /api/v1/auth/login: đăng nhập và cấp JWT.
+- POST /api/v1/auth/logout: đăng xuất tất cả phiên.
+- Tự khóa sau số lần đăng nhập sai được cấu hình trong SQL.
+- Kiểm tra trạng thái tài khoản và TokenVersion khi xác thực JWT.
+
+Chưa có API hồ sơ, avatar và phân quyền theo dự án trong nhánh này.
 
 ## Yêu cầu
 
@@ -21,6 +26,7 @@ Trên database mới, chạy các script theo thứ tự:
 2. Database/02_Logic.sql
 3. Database/03_SeedData.sql
 4. Database/07_AddTokenVersion.sql
+5. Database/08_UpdateUserStatusTokenVersion.sql
 
 Không chạy lại các script tạo bảng và seed trên database đã có dữ liệu.
 
@@ -55,3 +61,58 @@ Xem địa chỉ thực tế ở dòng Now listening on trong Terminal.
 
 Build thành công không đồng nghĩa đã kiểm tra kết nối SQL.
 Nhánh này chưa có Controller nghiệp vụ để kiểm thử truy vấn.
+## Cấu hình JWT
+
+Chạy từ thư mục gốc repository:
+
+```powershell
+dotnet user-secrets set "Jwt:Issuer" "MyTaigaAPI" --project ./backend/MyTaigaAPI/MyTaigaAPI.csproj
+dotnet user-secrets set "Jwt:Audience" "MyTaigaFrontend" --project ./backend/MyTaigaAPI/MyTaigaAPI.csproj
+```
+
+Tạo khóa ngẫu nhiên bằng PowerShell:
+
+```powershell
+$bytes = New-Object byte[] 64
+$rng = [System.Security.Cryptography.RandomNumberGenerator]::Create()
+$rng.GetBytes($bytes)
+$rng.Dispose()
+$key = [Convert]::ToBase64String($bytes)
+dotnet user-secrets set "Jwt:Key" "$key" --project ./backend/MyTaigaAPI/MyTaigaAPI.csproj
+Remove-Variable bytes, key
+```
+
+Mỗi máy cài đặt phải cấu hình secrets riêng. Không commit khóa JWT.
+
+## Thiết lập mật khẩu Admin
+
+Chạy công cụ:
+
+```powershell
+dotnet run --project ./backend/MyTaiga.PasswordTool/MyTaiga.PasswordTool.csproj
+```
+
+Nhập mật khẩu hai lần, lấy hash BCrypt rồi chạy trong SSMS:
+
+```sql
+USE ScrumbanDB;
+GO
+
+UPDATE dbo.[User]
+SET PasswordHash = 'THAY_BANG_HASH_BCRYPT_THAT',
+    UpdatedAt = SYSUTCDATETIME()
+WHERE Email = 'admin@scrumban.local';
+```
+
+Chỉ chạy sau khi thay chuỗi mẫu bằng hash thật.
+Không commit mật khẩu hoặc hash thật.
+
+## Kiểm thử bản trên nhánh be/auth
+
+Đã build thành công và kiểm thử tại localhost:5142:
+- Đăng nhập USER thành công.
+- Đăng xuất tất cả phiên thành công.
+- Gọi lại logout bằng token vừa thu hồi nhận HTTP 401.
+
+Các kiểm thử trên dùng database phát triển đã có tài khoản thử.
+Chưa kiểm thử cài đặt lại toàn bộ từ database trống trên nhánh này.
