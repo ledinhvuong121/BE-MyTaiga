@@ -270,5 +270,26 @@ dotnet user-secrets set "Email:Provider" "Development" --project .\backend\MyTai
 Đã kiểm thử nhận email thật qua Gmail và dùng mã trong thư
 để đặt lại mật khẩu thành công.
 
-Email hiện chứa mã khôi phục.
+Email chứa liên kết khôi phục có mã token
 Chưa tích hợp liên kết tới trang đặt lại mật khẩu của frontend.
+## Liên kết khôi phục mật khẩu
+
+Cấu hình Frontend:ResetPasswordUrl bằng User Secrets
+hoặc biến môi trường.
+
+Ví dụ chạy trên máy:
+http://localhost:5173/reset-password
+
+Backend gửi liên kết dạng:
+<Frontend:ResetPasswordUrl>?token=<ma-khoi-phuc>
+
+URL cấu hình không chứa query hoặc fragment.
+Dùng HTTPS khi triển khai; HTTP chỉ dành cho địa chỉ loopback.
+
+Frontend cần đọc token từ liên kết và gọi:
+POST /api/v1/auth/reset-password
+
+Body gồm: token, newPassword, confirmPassword.
+
+Đã kiểm thử nhận email Gmail chứa liên kết khôi phục.
+Chưa kiểm thử toàn bộ luồng qua giao diện frontend.

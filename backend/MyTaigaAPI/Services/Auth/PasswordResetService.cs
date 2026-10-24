@@ -13,31 +13,55 @@ public class PasswordResetService
     private readonly ScrumbanDbContext _db;
     private readonly SystemConfigService _config;
     private readonly IEmailSender _emailSender;
+    private readonly IConfiguration _configuration;
 
     public PasswordResetService(
         ScrumbanDbContext db,
         SystemConfigService config,
-        IEmailSender emailSender)
+        IEmailSender emailSender,
+        IConfiguration configuration)
     {
         _db = db;
         _config = config;
         _emailSender = emailSender;
+        _configuration = configuration;
     }
 
     public async Task RequestAsync(
         string email,
         CancellationToken cancellationToken = default)
     {
+        var resetPageUrl =
+            _configuration["Frontend:ResetPasswordUrl"];
+
+        if (!Uri.TryCreate(
+                resetPageUrl,
+                UriKind.Absolute,
+                out var resetPage)
+            || (resetPage.Scheme != Uri.UriSchemeHttps
+                && !(resetPage.Scheme == Uri.UriSchemeHttp
+                     && resetPage.IsLoopback))
+            || !string.IsNullOrEmpty(resetPage.Query)
+            || !string.IsNullOrEmpty(resetPage.Fragment)
+            || !string.IsNullOrEmpty(resetPage.UserInfo))
+        {
+            throw new InvalidOperationException(
+                "Frontend:ResetPasswordUrl phải là URL HTTPS "
+                + "hoặc HTTP localhost, không chứa query hay fragment.");
+        }
+
         var minutes = await _config.GetPositiveIntAsync(
             "RESET_TOKEN_EXPIRE_MINUTES",
             cancellationToken);
 
         var normalizedEmail = email.Trim();
+
         string recipient;
         string token;
 
         await using (var transaction =
-            await _db.Database.BeginTransactionAsync(cancellationToken))
+            await _db.Database.BeginTransactionAsync(
+                cancellationToken))
         {
             var user = await _db.Users
                 .FromSqlInterpolated($"""
@@ -56,11 +80,14 @@ public class PasswordResetService
 
             var now = DateTime.UtcNow;
 
-            // Mã mới thay thế mọi mã chưa sử dụng trước đó.
+            // Mã mới thay thế các mã chưa sử dụng trước đó.
             await _db.PasswordResetTokens
-                .Where(x => x.UserId == user.UserId && !x.IsUsed)
+                .Where(x =>
+                    x.UserId == user.UserId && !x.IsUsed)
                 .ExecuteUpdateAsync(
-                    setters => setters.SetProperty(x => x.IsUsed, true),
+                    setters => setters.SetProperty(
+                        x => x.IsUsed,
+                        true),
                     cancellationToken);
 
             _db.PasswordResetTokens.Add(new PasswordResetToken
@@ -88,13 +115,16 @@ public class PasswordResetService
             recipient = user.Email;
         }
 
-        // Chưa có trang frontend khôi phục, nên email thử chứa mã
-        // để kiểm thử API reset-password trực tiếp.
+        var resetLink =
+            $"{resetPage.AbsoluteUri}?token={Uri.EscapeDataString(token)}";
+
         var body =
-            $"Bạn đã yêu cầu đặt lại mật khẩu MyTaiga.\n\n" +
-            $"Mã đặt lại mật khẩu: {token}\n\n" +
-            $"Mã có hiệu lực {minutes} phút và chỉ dùng một lần.\n" +
-            "Nếu bạn không yêu cầu, hãy bỏ qua email này.";
+            "Bạn đã yêu cầu đặt lại mật khẩu MyTaiga.\n\n"
+            + "Mở liên kết sau để đặt mật khẩu mới:\n"
+            + $"{resetLink}\n\n"
+            + $"Liên kết có hiệu lực {minutes} phút "
+            + "và chỉ dùng một lần.\n"
+            + "Nếu bạn không yêu cầu, hãy bỏ qua email này.";
 
         await _emailSender.SendAsync(
             recipient,
@@ -103,115 +133,123 @@ public class PasswordResetService
             cancellationToken);
     }
 
+    public async System.Threading.Tasks.Task<bool> ResetAsync(
+        string token,
+        string newPassword,
+        CancellationToken cancellationToken = default)
+    {
+        var minLength = await _config.GetPositiveIntAsync(
+            "MIN_PASSWORD_LENGTH",
+            cancellationToken);
+
+        var requiredLength = Math.Max(8, minLength);
+
+        if (string.IsNullOrEmpty(newPassword)
+            || newPassword.Length < requiredLength
+            || Encoding.UTF8.GetByteCount(newPassword) > 72)
+        {
+            throw new ArgumentException(
+                $"Mật khẩu cần ít nhất {requiredLength} ký tự "
+                + "và không vượt quá 72 byte UTF-8.");
+        }
+
+        var normalizedToken = token?.Trim();
+
+        if (string.IsNullOrEmpty(normalizedToken)
+            || normalizedToken.Length != 64
+            || !normalizedToken.All(Uri.IsHexDigit))
+        {
+            return false;
+        }
+
+        var tokenHash = HashToken(
+            normalizedToken.ToUpperInvariant());
+
+        var candidate = await _db.PasswordResetTokens
+            .AsNoTracking()
+            .Where(x => x.TokenHash == tokenHash)
+            .Select(x => new
+            {
+                x.TokenId,
+                x.UserId
+            })
+            .SingleOrDefaultAsync(cancellationToken);
+
+        if (candidate is null)
+            return false;
+
+        var passwordHash = BCrypt.Net.BCrypt.HashPassword(
+            newPassword,
+            workFactor: 12);
+
+        await using var transaction =
+            await _db.Database.BeginTransactionAsync(
+                cancellationToken);
+
+        // Khóa người dùng để tránh xử lý đồng thời.
+        var user = await _db.Users
+            .FromSqlInterpolated($"""
+                SELECT *
+                FROM dbo.[User] WITH (UPDLOCK, HOLDLOCK)
+                WHERE UserId = {candidate.UserId}
+                """)
+            .SingleOrDefaultAsync(cancellationToken);
+
+        if (user is null || user.Status != 1)
+            return false;
+
+        var resetToken = await _db.PasswordResetTokens
+            .SingleOrDefaultAsync(
+                x => x.TokenId == candidate.TokenId
+                    && x.UserId == user.UserId
+                    && x.TokenHash == tokenHash,
+                cancellationToken);
+
+        var now = DateTime.UtcNow;
+
+        if (resetToken is null
+            || resetToken.IsUsed
+            || resetToken.ExpiresAt <= now)
+        {
+            return false;
+        }
+
+        user.PasswordHash = passwordHash;
+        user.FailedLoginCount = 0;
+        user.TokenVersion = checked(user.TokenVersion + 1);
+        user.UpdatedAt = now;
+
+        // Vô hiệu hóa mọi mã đặt lại mật khẩu chưa sử dụng.
+        await _db.PasswordResetTokens
+            .Where(x =>
+                x.UserId == user.UserId && !x.IsUsed)
+            .ExecuteUpdateAsync(
+                setters => setters.SetProperty(
+                    x => x.IsUsed,
+                    true),
+                cancellationToken);
+
+        _db.ActivityLogs.Add(new ActivityLog
+        {
+            UserId = user.UserId,
+            Action = "PASSWORD_RESET_COMPLETED",
+            EntityType = "USER",
+            EntityId = user.UserId,
+            Description =
+                "Đặt lại mật khẩu và thu hồi tất cả phiên đăng nhập.",
+            CreatedAt = now
+        });
+
+        await _db.SaveChangesAsync(cancellationToken);
+        await transaction.CommitAsync(cancellationToken);
+
+        return true;
+    }
+
     private static string HashToken(string token)
     {
         return Convert.ToHexString(
-            SHA256.HashData(Encoding.UTF8.GetBytes(token)));
+            SHA256.HashData(
+                Encoding.UTF8.GetBytes(token)));
     }
-    public async System.Threading.Tasks.Task<bool> ResetAsync(
-    string token,
-    string newPassword,
-    CancellationToken cancellationToken = default)
-{
-    var minLength = await _config.GetPositiveIntAsync(
-        "MIN_PASSWORD_LENGTH",
-        cancellationToken);
-
-    var requiredLength = Math.Max(8, minLength);
-
-    if (string.IsNullOrEmpty(newPassword)
-        || newPassword.Length < requiredLength
-        || Encoding.UTF8.GetByteCount(newPassword) > 72)
-    {
-        throw new ArgumentException(
-            $"Mật khẩu cần ít nhất {requiredLength} ký tự "
-            + "và không vượt quá 72 byte UTF-8.");
-    }
-
-    var normalizedToken = token?.Trim();
-
-    if (string.IsNullOrEmpty(normalizedToken)
-        || normalizedToken.Length != 64
-        || !normalizedToken.All(Uri.IsHexDigit))
-    {
-        return false;
-    }
-
-    var tokenHash = HashToken(normalizedToken.ToUpperInvariant());
-
-    var candidate = await _db.PasswordResetTokens
-        .AsNoTracking()
-        .Where(x => x.TokenHash == tokenHash)
-        .Select(x => new
-        {
-            x.TokenId,
-            x.UserId
-        })
-        .SingleOrDefaultAsync(cancellationToken);
-
-    if (candidate is null)
-        return false;
-
-    var passwordHash = BCrypt.Net.BCrypt.HashPassword(
-        newPassword,
-        workFactor: 12);
-
-    await using var transaction =
-        await _db.Database.BeginTransactionAsync(cancellationToken);
-
-    // Khóa bản ghi người dùng để tránh xử lý đồng thời.
-    var user = await _db.Users
-        .FromSqlInterpolated($"""
-            SELECT *
-            FROM dbo.[User] WITH (UPDLOCK, HOLDLOCK)
-            WHERE UserId = {candidate.UserId}
-            """)
-        .SingleOrDefaultAsync(cancellationToken);
-
-    if (user is null || user.Status != 1)
-        return false;
-
-    var resetToken = await _db.PasswordResetTokens
-        .SingleOrDefaultAsync(
-            x => x.TokenId == candidate.TokenId
-                && x.UserId == user.UserId
-                && x.TokenHash == tokenHash,
-            cancellationToken);
-
-    var now = DateTime.UtcNow;
-
-    if (resetToken is null
-        || resetToken.IsUsed
-        || resetToken.ExpiresAt <= now)
-    {
-        return false;
-    }
-
-    user.PasswordHash = passwordHash;
-    user.FailedLoginCount = 0;
-    user.TokenVersion = checked(user.TokenVersion + 1);
-    user.UpdatedAt = now;
-
-    // Vô hiệu hóa tất cả mã đặt lại mật khẩu của người dùng.
-    await _db.PasswordResetTokens
-        .Where(x => x.UserId == user.UserId && !x.IsUsed)
-        .ExecuteUpdateAsync(
-            setters => setters.SetProperty(x => x.IsUsed, true),
-            cancellationToken);
-
-    _db.ActivityLogs.Add(new ActivityLog
-    {
-        UserId = user.UserId,
-        Action = "PASSWORD_RESET_COMPLETED",
-        EntityType = "USER",
-        EntityId = user.UserId,
-        Description = "Đặt lại mật khẩu và thu hồi tất cả phiên đăng nhập.",
-        CreatedAt = now
-    });
-
-    await _db.SaveChangesAsync(cancellationToken);
-    await transaction.CommitAsync(cancellationToken);
-
-    return true;
-}
 }
