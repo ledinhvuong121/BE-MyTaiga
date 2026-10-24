@@ -157,3 +157,40 @@ Xem và sửa hồ sơ đã được kiểm thử trên backend gốc.
 Chưa kiểm thử đầy đủ các trường hợp file lỗi, quá dung lượng,
 sai định dạng và truy cập ảnh của tài khoản khác trên nhánh mới.
 Chưa có cơ chế dọn file avatar cũ.
+**Đúng: thiếu JWT bị chặn bằng HTTP 401** ✅
+
+Phần khóa/mở khóa đã kiểm thử được: USER bị chặn 403, Admin khóa/mở khóa thành công, token cũ bị thu hồi, tự khóa Admin bị chặn 409 và tài khoản không tồn tại trả 404.
+
+Giờ thêm cuối **`backend/readme.md`**:
+
+```markdown
+## API Admin khóa và mở khóa tài khoản
+
+Yêu cầu JWT của tài khoản ADMIN. Không cần request body.
+
+- PATCH /api/v1/admin/users/{userId}/lock
+- PATCH /api/v1/admin/users/{userId}/unlock
+
+Khóa tài khoản tăng TokenVersion để thu hồi toàn bộ token cũ.
+Mở khóa đặt FailedLoginCount về 0 và không khôi phục token cũ.
+Các thao tác được ghi vào ActivityLog.
+
+Mã phản hồi:
+- 200: thành công.
+- 400: userId không hợp lệ.
+- 401: thiếu JWT, JWT không hợp lệ hoặc đã bị thu hồi.
+- 403: không có quyền Admin.
+- 404: tài khoản không tồn tại.
+- 409: Admin cố khóa chính mình.
+
+Đã kiểm thử trên cổng 5142:
+- USER gọi lock nhận 403.
+- Admin khóa và mở khóa tài khoản thử thành công.
+- Token USER cũ nhận 401 cả sau khi mở khóa.
+- Admin tự khóa nhận 409.
+- Tài khoản không tồn tại nhận 404.
+- Không gửi JWT nhận 401.
+
+Chưa kiểm thử riêng userId không hợp lệ và USER gọi unlock.
+```
+
