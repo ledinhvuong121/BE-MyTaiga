@@ -103,12 +103,29 @@ builder.Services.AddScoped<JwtTokenService>();
 builder.Services.AddScoped<SystemConfigService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<AvatarImageService>();
-if (builder.Environment.IsDevelopment())
+var emailProvider = builder.Configuration["Email:Provider"]
+    ?? "Development";
+
+if (emailProvider.Equals("Smtp", StringComparison.OrdinalIgnoreCase))
+{
+    builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
+}
+else if (
+    emailProvider.Equals("Development", StringComparison.OrdinalIgnoreCase)
+    && builder.Environment.IsDevelopment())
 {
     builder.Services.AddScoped<IEmailSender, DevelopmentEmailSender>();
-    builder.Services.AddScoped<PasswordResetService>();
 }
+else
+{
+    throw new InvalidOperationException(
+        "Cấu hình Email:Provider không hợp lệ. "
+        + "Môi trường ngoài Development phải cấu hình Smtp.");
+}
+
+builder.Services.AddScoped<PasswordResetService>();
 builder.Services.AddScoped<ChangePasswordService>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

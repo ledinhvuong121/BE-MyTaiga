@@ -242,3 +242,33 @@ Người dùng phải đăng nhập lại.
 - Token cũ sau khi đổi: HTTP 401.
 - Đăng nhập bằng mật khẩu mới: thành công.
 - Mật khẩu hiện tại sai: HTTP 400.
+## Gửi email qua SMTP
+
+Email:Provider chọn cách gửi:
+- Development: ghi email vào App_Data/dev-emails, chỉ dùng trong Development.
+- Smtp: gửi email thật qua MailKit, cổng 587 với STARTTLS.
+
+Cấu hình SMTP bằng User Secrets hoặc biến môi trường:
+- Email:Provider = Smtp
+- Email:Smtp:Host = smtp.gmail.com
+- Email:Smtp:Port = 587
+- Email:Smtp:Username = địa chỉ Gmail gửi
+- Email:Smtp:Password = mật khẩu ứng dụng Google
+- Email:Smtp:FromAddress = địa chỉ Gmail gửi
+- Email:Smtp:FromName = MyTaiga
+
+Không đưa mật khẩu vào mã nguồn hoặc Git.
+Mỗi máy cần tự cấu hình; User Secrets không đi kèm repository.
+Gmail cần bật xác minh 2 bước và tạo mật khẩu ứng dụng.
+Tài khoản nhận thư phải dùng địa chỉ email thật.
+
+Để thử bằng file trên máy:
+```powershell
+dotnet user-secrets set "Email:Provider" "Development" --project .\backend\MyTaigaAPI\MyTaigaAPI.csproj
+```
+
+Đã kiểm thử nhận email thật qua Gmail và dùng mã trong thư
+để đặt lại mật khẩu thành công.
+
+Email hiện chứa mã khôi phục.
+Chưa tích hợp liên kết tới trang đặt lại mật khẩu của frontend.
