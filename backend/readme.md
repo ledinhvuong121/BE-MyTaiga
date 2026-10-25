@@ -316,6 +316,11 @@ Chưa tích hợp xác minh email.
 - Đăng nhập bằng tài khoản mới: thành công.
 - Email trùng: HTTP 409.
 - Xác nhận mật khẩu không khớp: HTTP 400, lỗi ConfirmPassword.
+# Thành viên dự án
+
+Đã bổ sung UC5.1–UC5.5: thêm/xóa, danh sách/tìm kiếm/lọc/phân trang, nâng Member lên Manager.
+Xem `docs/testing-members.md`. Đã kiểm thử 39 trường hợp và chạy lại 42 kiểm tra dự án.
+
 # Quản lý dự án
 
 Đã bổ sung API tạo, danh sách có phân trang/lọc, chi tiết, cập nhật, đóng và xóa mềm dự án

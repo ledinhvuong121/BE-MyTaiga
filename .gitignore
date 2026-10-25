@@ -40,3 +40,7 @@ secrets.json
 
 # Development emails contain password reset links
 **/App_Data/dev-emails/
+
+# Python integration-check cache
+__pycache__/
+*.pyc

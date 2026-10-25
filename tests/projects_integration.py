@@ -25,7 +25,7 @@ passed = []
 
 
 def sql(statement):
-    result = subprocess.run(['sqlcmd', '-S', SERVER, '-E', '-C', '-b', '-d', DATABASE,
+    result = subprocess.run(['sqlcmd', '-S', SERVER, '-E', '-C', '-I', '-b', '-d', DATABASE,
                              '-h', '-1', '-W', '-Q', 'SET NOCOUNT ON; ' + statement],
                             capture_output=True, text=True, check=True)
     return result.stdout.strip()
