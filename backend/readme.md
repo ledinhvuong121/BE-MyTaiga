@@ -326,6 +326,9 @@ Xem `docs/testing-members.md`. Đã kiểm thử 39 trường hợp và chạy l
 
 # Quản lý dự án
 
+Epic UC9–UC10 đã có CRUD, danh sách/lọc, tiến độ PBI/Task và liên kết công việc cùng dự án.
+Xem `docs/testing-epics.md`; 38 kiểm tra HTTP + SQL thực đã đạt.
+
 Đã bổ sung API tạo, danh sách có phân trang/lọc, chi tiết, cập nhật, đóng và xóa mềm dự án
 (UC4.1–UC4.5). Người tạo là MANAGER; thành viên chỉ đọc, Admin không có quyền ngầm.
 Xem `docs/testing-projects.md` để lấy request/response, quy tắc và cách chạy kiểm thử.
