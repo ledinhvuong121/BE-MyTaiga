@@ -152,6 +152,7 @@ public class EpicsController(ScrumbanDbContext db) : ControllerBase
     }
 
     [HttpPatch("api/v1/pbis/{pbiId:long}/epic")]
+    [HttpPatch("api/v1/product-backlog-items/{pbiId:long}/epic")]
     public Task<IActionResult> LinkPbi(long pbiId, LinkEpicRequest request, CancellationToken ct) =>
         Link(pbiId, request.EpicId, false, ct);
 

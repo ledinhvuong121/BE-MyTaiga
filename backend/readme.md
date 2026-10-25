@@ -326,6 +326,9 @@ Xem `docs/testing-members.md`. Đã kiểm thử 39 trường hợp và chạy l
 
 # Quản lý dự án
 
+Product Backlog UC7–UC8 đã có CRUD, tìm/lọc/phân trang, ưu tiên và sắp xếp PBI trong Epic.
+Xem `docs/testing-backlog.md`; 43 kiểm tra Backlog và 38 kiểm tra Epic hồi quy đã đạt.
+
 Epic UC9–UC10 đã có CRUD, danh sách/lọc, tiến độ PBI/Task và liên kết công việc cùng dự án.
 Xem `docs/testing-epics.md`; 38 kiểm tra HTTP + SQL thực đã đạt.
 
