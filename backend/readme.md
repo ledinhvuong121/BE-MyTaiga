@@ -316,3 +316,9 @@ Chưa tích hợp xác minh email.
 - Đăng nhập bằng tài khoản mới: thành công.
 - Email trùng: HTTP 409.
 - Xác nhận mật khẩu không khớp: HTTP 400, lỗi ConfirmPassword.
+# Quản lý dự án
+
+Đã bổ sung API tạo, danh sách có phân trang/lọc, chi tiết, cập nhật, đóng và xóa mềm dự án
+(UC4.1–UC4.5). Người tạo là MANAGER; thành viên chỉ đọc, Admin không có quyền ngầm.
+Xem `docs/testing-projects.md` để lấy request/response, quy tắc và cách chạy kiểm thử.
+Đã chạy 42 kiểm tra HTTP + SQL thực trên database riêng ngày 2026-10-25.
