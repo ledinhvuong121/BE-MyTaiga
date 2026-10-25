@@ -293,3 +293,26 @@ Body gồm: token, newPassword, confirmPassword.
 
 Đã kiểm thử nhận email Gmail chứa liên kết khôi phục.
 Chưa kiểm thử toàn bộ luồng qua giao diện frontend.
+## Đăng ký tài khoản
+
+POST /api/v1/auth/register
+Không yêu cầu token.
+
+Body:
+{
+  "fullName": "Người dùng mới",
+  "email": "user@example.com",
+  "password": "<mat-khau>",
+  "confirmPassword": "<nhap-lai-mat-khau>"
+}
+
+Tài khoản mới được cấp vai trò USER thuộc SYSTEM.
+Mật khẩu lưu dưới dạng BCrypt.
+Đăng ký thành công không tự đăng nhập.
+Chưa tích hợp xác minh email.
+
+Đã kiểm thử:
+- Đăng ký mới: HTTP 201, trả userId và systemRole USER.
+- Đăng nhập bằng tài khoản mới: thành công.
+- Email trùng: HTTP 409.
+- Xác nhận mật khẩu không khớp: HTTP 400, lỗi ConfirmPassword.

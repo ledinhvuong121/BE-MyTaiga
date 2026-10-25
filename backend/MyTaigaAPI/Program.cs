@@ -125,7 +125,7 @@ else
 
 builder.Services.AddScoped<PasswordResetService>();
 builder.Services.AddScoped<ChangePasswordService>();
-
+builder.Services.AddScoped<RegisterService>();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
