@@ -318,6 +318,9 @@ Chưa tích hợp xác minh email.
 - Xác nhận mật khẩu không khớp: HTTP 400, lỗi ConfirmPassword.
 # Thành viên dự án
 
+Phòng ban UC6.1–UC6.4 đã có thêm/sửa/xóa, danh sách và gán/chuyển/bỏ gán thành viên.
+Xem `docs/testing-departments.md`; 39 kiểm tra phòng ban và 81 kiểm tra hồi quy đã đạt.
+
 Đã bổ sung UC5.1–UC5.5: thêm/xóa, danh sách/tìm kiếm/lọc/phân trang, nâng Member lên Manager.
 Xem `docs/testing-members.md`. Đã kiểm thử 39 trường hợp và chạy lại 42 kiểm tra dự án.
 
