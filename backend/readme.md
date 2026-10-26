@@ -28,6 +28,8 @@ Trên database mới, chạy các script theo thứ tự:
 3. Database/03_SeedData.sql
 4. Database/07_AddTokenVersion.sql
 5. Database/08_UpdateUserStatusTokenVersion.sql
+6. Database/09_UserCreatedAtUtc.sql
+7. Database/10_SprintBurndownEvents.sql
 
 Không chạy lại các script tạo bảng và seed trên database đã có dữ liệu.
 
@@ -325,6 +327,11 @@ Xem `docs/testing-departments.md`; 39 kiểm tra phòng ban và 81 kiểm tra h�
 Xem `docs/testing-members.md`. Đã kiểm thử 39 trường hợp và chạy lại 42 kiểm tra dự án.
 
 # Quản lý dự án
+
+Sprint UC11–UC12 đã có lập kế hoạch, chọn PBI, bắt đầu/đóng, tiến độ, Goal và dữ liệu Burndown.
+**Chạy Database/10_SprintBurndownEvents.sql sau script 09 trước khi dùng bản mới.**
+Xem `docs/testing-sprints.md`; 58 kiểm tra Sprint và 201 kiểm tra hồi quy đã đạt ngày 2026-10-26.
+Thông báo Sprint đã lưu trong database; SignalR thuộc nhóm chức năng tiếp theo.
 
 Product Backlog UC7–UC8 đã có CRUD, tìm/lọc/phân trang, ưu tiên và sắp xếp PBI trong Epic.
 Xem `docs/testing-backlog.md`; 43 kiểm tra Backlog và 38 kiểm tra Epic hồi quy đã đạt.

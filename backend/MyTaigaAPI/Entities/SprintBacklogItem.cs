@@ -11,6 +11,10 @@ public partial class SprintBacklogItem
 
     public DateTime AddedAt { get; set; }
 
+    public int? StoryPointAtClose { get; set; }
+
+    public string? StatusAtClose { get; set; }
+
     public virtual ProductBacklogItem Pbi { get; set; } = null!;
 
     public virtual Sprint Sprint { get; set; } = null!;

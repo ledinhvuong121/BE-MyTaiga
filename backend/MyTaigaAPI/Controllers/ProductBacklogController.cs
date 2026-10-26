@@ -110,10 +110,11 @@ public class ProductBacklogController(ScrumbanDbContext db) : ControllerBase
             item = new ProductBacklogItem { CreatedAt = DateTime.UtcNow };
             db.ProductBacklogItems.Add(item);
         }
-        var linked = id.HasValue && await db.SprintBacklogItems.AnyAsync(b => b.Pbiid == id, ct);
+        var linked = id.HasValue && await db.SprintBacklogItems.AnyAsync(b => b.Pbiid == id && b.Sprint.Status != "CLOSED", ct);
         if (delete)
         {
-            if (linked) return Reply(409, "Không thể xóa PBI đã liên kết Sprint.");
+            if (id.HasValue && await db.SprintBacklogItems.AnyAsync(b => b.Pbiid == id, ct))
+                return Reply(409, "Không thể xóa PBI đã liên kết Sprint.");
             db.ProductBacklogItems.Remove(item);
         }
         else if (priority.HasValue) item.Priority = priority.Value;

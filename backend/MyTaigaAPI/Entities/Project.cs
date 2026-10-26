@@ -39,7 +39,7 @@ public partial class Project
 
     public virtual ICollection<ProjectMember> ProjectMembers { get; set; } = new List<ProjectMember>();
 
-    public virtual Sprint? Sprint { get; set; }
+    public virtual ICollection<Sprint> Sprints { get; set; } = new List<Sprint>();
 
     public virtual ICollection<Task> Tasks { get; set; } = new List<Task>();
 }

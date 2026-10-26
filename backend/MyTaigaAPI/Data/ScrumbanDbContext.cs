@@ -458,7 +458,7 @@ public partial class ScrumbanDbContext : DbContext
         {
             entity.HasKey(e => e.Pbiid).HasName("PK_PBI");
 
-            entity.ToTable("ProductBacklogItem");
+            entity.ToTable("ProductBacklogItem", tb => tb.HasTrigger("trg_PBI_Burndown"));
 
             entity.HasIndex(e => new { e.EpicId, e.Priority }, "IX_PBI_Epic");
 
@@ -611,8 +611,8 @@ public partial class ScrumbanDbContext : DbContext
                 .IsUnicode(false)
                 .HasDefaultValue("PLANNED");
 
-            entity.HasOne(d => d.Project).WithOne(p => p.Sprint)
-                .HasForeignKey<Sprint>(d => d.ProjectId)
+            entity.HasOne(d => d.Project).WithMany(p => p.Sprints)
+                .HasForeignKey(d => d.ProjectId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Sprint_Project");
         });
@@ -621,7 +621,7 @@ public partial class ScrumbanDbContext : DbContext
         {
             entity.HasKey(e => new { e.SprintId, e.Pbiid }).HasName("PK_SBI");
 
-            entity.ToTable("SprintBacklogItem");
+            entity.ToTable("SprintBacklogItem", tb => tb.HasTrigger("trg_SprintBacklog_Burndown"));
 
             entity.HasIndex(e => e.Pbiid, "IX_SBI_PBI");
 

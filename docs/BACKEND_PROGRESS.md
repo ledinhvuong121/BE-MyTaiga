@@ -1,6 +1,6 @@
 # Tiến độ backend Chương 2
 
-Cập nhật 2026-10-25. Các nhánh chức năng kế thừa tuần tự, chưa gộp main.
+Cập nhật 2026-10-26. Các nhánh chức năng kế thừa tuần tự, chưa gộp main.
 Không đánh đồng entity/schema có sẵn với API đã hoàn thành.
 
 | Phần | Nhánh | Kiểm thử mới |
@@ -11,16 +11,16 @@ Không đánh đồng entity/schema có sẵn với API đã hoàn thành.
 | UC6 phòng ban | be/project-departments | 39 kiểm tra HTTP + SQL |
 | UC9–UC10 Epic/liên kết/tiến độ | be/epics | 38 kiểm tra HTTP + SQL |
 | UC7–UC8 Product Backlog | be/product-backlog | 43 kiểm tra HTTP + SQL |
+| UC11–UC12 Sprint/Burndown/đóng Sprint | be/sprints | 58 kiểm tra HTTP + SQL, 201 kiểm tra hồi quy đạt |
 
-Nhánh mới nhất chứa đủ các phần trên. Không đổi User Secrets, mật khẩu, email thử,
-database ScrumbanDB hoặc file avatar người dùng trong đợt triển khai này.
+Nhánh mới nhất chứa đủ các phần trên. Không đổi User Secrets, mật khẩu, email thử
+hoặc file avatar người dùng. Sprint bổ sung schema qua script 10 như ghi bên dưới.
 Database riêng `MyTaiga_ProjectChecks_20261025` được giữ để tra cứu kết quả;
 dữ liệu test có tiền tố/tài khoản kiểm thử, không dùng như dữ liệu thật.
 Test API chạy ở 127.0.0.1:5159 với cấu hình tiến trình riêng, không dùng Gmail SMTP.
 
 ## Còn lại, chưa tuyên bố hoàn thành
 
-- UC11–UC12: Sprint, chọn PBI, tiến độ/Burndown, đóng Sprint.
 - UC13–UC17: Task/Subtask/phân công/deadline/priority, Board và di chuyển/sắp xếp.
 - UC18–UC23: cấu hình/cảnh báo WIP, Flow Metrics.
 - Các nhóm Bug, bình luận/tệp, thông báo/SignalR, chat,
@@ -28,8 +28,10 @@ Test API chạy ở 127.0.0.1:5159 với cấu hình tiến trình riêng, khôn
 - Kiểm thử tải lớn, rà soát toàn bộ bảo mật và bàn giao tích hợp frontend
   là công việc riêng, không được thay bằng các test chức năng này.
 
-Tiếp theo: Sprint. Lưu ý scaffold hiện có `Project.Sprint` số ít do unique filtered
-index một Sprint ACTIVE; cần kiểm tra mapping kỹ khi triển khai nhiều Sprint theo thời gian.
+Tiếp theo: Task/Subtask, giao việc, deadline/priority và Board.
+Mapping Project–Sprint đã sửa thành một-nhiều; cần script 10 cho các tính năng Sprint mới.
+Ngày 2026-10-26 đã áp dụng script 10 bổ sung schema (không xóa dữ liệu) vào ScrumbanDB;
+database thử vẫn riêng và các kiểm thử không chạy trên dữ liệu người dùng.
 
 ## Cách tiếp tục
 
