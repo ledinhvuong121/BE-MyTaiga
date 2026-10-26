@@ -49,3 +49,5 @@ database thử vẫn riêng và các kiểm thử không chạy trên dữ liệ
 
 Các script test và hướng dẫn chi tiết nằm trong `tests/` và `docs/testing-*.md`.
 Kết quả kiểm thử là bằng chứng cho các trường hợp đã chạy, không phải cam kết không còn lỗi.
+
+UC28: be/notifications — 23 kiểm tra đạt; tổng các bộ chức năng đến đây 595 kiểm tra.

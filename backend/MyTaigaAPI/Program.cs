@@ -6,11 +6,16 @@ using MyTaigaAPI.Data;
 using MyTaigaAPI.Services;
 using MyTaigaAPI.Services.Auth;
 using MyTaigaAPI.Services.Email;
+using MyTaigaAPI.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+builder.Services.AddSignalR();
+builder.Services.AddHostedService<NotificationDispatcher>();
+// Browser WebSockets use access_token query; avoid recording bearer tokens in request-start logs.
+builder.Logging.AddFilter("Microsoft.AspNetCore.Hosting.Diagnostics", LogLevel.Warning);
 
 builder.Services.AddDbContext<ScrumbanDbContext>(options =>
     options.UseSqlServer(
@@ -44,6 +49,13 @@ builder.Services
 
         options.Events = new JwtBearerEvents
         {
+            OnMessageReceived = context =>
+            {
+                if(context.Request.Path.StartsWithSegments("/hubs/notifications") &&
+                    string.IsNullOrEmpty(context.Request.Headers.Authorization))
+                    context.Token=context.Request.Query["access_token"];
+                return Task.CompletedTask;
+            },
             OnTokenValidated = async context =>
             {
                 var userIdClaim = context.Principal?
@@ -138,5 +150,6 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.MapHub<NotificationsHub>("/hubs/notifications", options => options.CloseOnAuthenticationExpiration = true);
 
 app.Run();

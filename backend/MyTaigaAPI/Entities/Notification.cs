@@ -25,5 +25,7 @@ public partial class Notification
 
     public DateTime? ReadAt { get; set; }
 
+    public DateTime? PushedAt { get; set; }
+
     public virtual User User { get; set; } = null!;
 }
