@@ -45,7 +45,7 @@ Chỉ dùng với database riêng có tên dạng `MyTaiga_*Checks_*`. Script t�
 JWT giả lập Admin chỉ hợp lệ với khóa kiểm thử riêng bên dưới.
 
 1. Tạo database tên mới, ví dụ `MyTaiga_ProjectChecks_20261025`:
-   lấy bản sao các script 01,02,03,07,08,09,10 vào thư mục tạm,
+   lấy bản sao các script 01,02,03,07,08,09,10,11 vào thư mục tạm,
    thay tên `ScrumbanDB` bằng tên database kiểm thử rồi chạy theo thứ tự.
    Không sửa script nguồn và không chạy script 01 lên database đã tồn tại.
 2. Trong PowerShell riêng, cấu hình biến môi trường **chỉ cho tiến trình thử**:

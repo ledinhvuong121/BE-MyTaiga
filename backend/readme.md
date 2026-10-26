@@ -30,6 +30,7 @@ Trên database mới, chạy các script theo thứ tự:
 5. Database/08_UpdateUserStatusTokenVersion.sql
 6. Database/09_UserCreatedAtUtc.sql
 7. Database/10_SprintBurndownEvents.sql
+8. Database/11_TaskUtcHistory.sql
 
 Không chạy lại các script tạo bảng và seed trên database đã có dữ liệu.
 
@@ -327,6 +328,9 @@ Xem `docs/testing-departments.md`; 39 kiểm tra phòng ban và 81 kiểm tra h�
 Xem `docs/testing-members.md`. Đã kiểm thử 39 trường hợp và chạy lại 42 kiểm tra dự án.
 
 # Quản lý dự án
+
+Task UC13–UC15 có CRUD/Subtask, phân công, tiến độ, deadline/priority và API cảnh báo.
+Xem `docs/testing-tasks.md`; chạy script 11 sau 10. 61 kiểm tra thực tế đã đạt.
 
 Sprint UC11–UC12 đã có lập kế hoạch, chọn PBI, bắt đầu/đóng, tiến độ, Goal và dữ liệu Burndown.
 **Chạy Database/10_SprintBurndownEvents.sql sau script 09 trước khi dùng bản mới.**
