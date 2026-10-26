@@ -370,3 +370,5 @@ Xem `docs/testing-projects.md` để lấy request/response, quy tắc và cách
 Đã chạy 42 kiểm tra HTTP + SQL thực trên database riêng ngày 2026-10-25.
 
 Thông báo: chạy Database/14_NotificationOutbox.sql sau script 13. GET /api/v1/notifications, GET /api/v1/notifications/unread-count, PATCH /api/v1/notifications/{id}/read, PATCH /api/v1/notifications/read-all. Nhật ký: GET /api/v1/projects/{id}/activity-logs. SignalR: /hubs/notifications; event notificationReceived. Xem docs/testing-notifications.md.
+
+Chat UC29–32: chạy Database/15_ChatDelivery.sql; API và hợp đồng realtime ở docs/testing-chat.md.

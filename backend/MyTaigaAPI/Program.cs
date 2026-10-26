@@ -51,7 +51,7 @@ builder.Services
         {
             OnMessageReceived = context =>
             {
-                if(context.Request.Path.StartsWithSegments("/hubs/notifications") &&
+                if((context.Request.Path.StartsWithSegments("/hubs/notifications") || context.Request.Path.StartsWithSegments("/hubs/chat")) &&
                     string.IsNullOrEmpty(context.Request.Headers.Authorization))
                     context.Token=context.Request.Query["access_token"];
                 return Task.CompletedTask;
@@ -139,6 +139,7 @@ else
 builder.Services.AddScoped<PasswordResetService>();
 builder.Services.AddScoped<ChangePasswordService>();
 builder.Services.AddScoped<RegisterService>();
+builder.Services.AddHostedService<ChatDispatcher>();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -152,4 +153,6 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapHub<NotificationsHub>("/hubs/notifications", options => options.CloseOnAuthenticationExpiration = true);
 
+app.MapHub<ChatHub>("/hubs/chat", options => options.CloseOnAuthenticationExpiration = true);
 app.Run();
+

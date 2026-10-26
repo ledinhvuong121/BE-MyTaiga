@@ -13,10 +13,8 @@ public static class NotificationScope
         (n.RefType=="COMMENT"&&db.Comments.Any(c=>c.CommentId==n.RefId&&c.Task.Project.Status!="DELETED"&&c.Task.Project.ProjectMembers.Any(m=>m.UserId==userId)))||
         (n.RefType=="SPRINT"&&db.Sprints.Any(s=>s.SprintId==n.RefId&&s.Project.Status!="DELETED"&&s.Project.ProjectMembers.Any(m=>m.UserId==userId)))||
         (n.RefType=="ATTACHMENT"&&db.Attachments.Any(a=>a.AttachmentId==n.RefId&&a.Task.Project.Status!="DELETED"&&a.Task.Project.ProjectMembers.Any(m=>m.UserId==userId)))||
-        (n.RefType=="CHAT_ROOM"&&db.ChatParticipants.Any(p=>p.ChatRoomId==n.RefId&&p.UserId==userId&&(p.ChatRoom.ProjectId==null||
-            (p.ChatRoom.Project!.Status!="DELETED"&&p.ChatRoom.Project.ProjectMembers.Any(m=>m.UserId==userId)))))||
-        (n.RefType=="MESSAGE"&&db.Messages.Any(message=>message.MessageId==n.RefId&&message.ChatRoom.ChatParticipants.Any(p=>p.UserId==userId)&&
-            (message.ChatRoom.ProjectId==null||(message.ChatRoom.Project!.Status!="DELETED"&&message.ChatRoom.Project.ProjectMembers.Any(m=>m.UserId==userId)))))
+        (n.RefType=="CHAT_ROOM"&&ChatScope.Visible(db,userId).Any(r=>r.ChatRoomId==n.RefId))||
+        (n.RefType=="MESSAGE"&&db.Messages.Any(m=>m.MessageId==n.RefId&&ChatScope.Visible(db,userId).Any(r=>r.ChatRoomId==m.ChatRoomId)))
         ));
     public static object Details(Notification n)=>new{n.NotificationId,n.Type,n.Title,n.Content,n.RefType,n.RefId,n.IsRead,
         createdAt=DateTime.SpecifyKind(n.CreatedAt,DateTimeKind.Utc),readAt=n.ReadAt.HasValue?DateTime.SpecifyKind(n.ReadAt.Value,DateTimeKind.Utc):(DateTime?)null};

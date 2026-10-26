@@ -51,3 +51,5 @@ Các script test và hướng dẫn chi tiết nằm trong `tests/` và `docs/te
 Kết quả kiểm thử là bằng chứng cho các trường hợp đã chạy, không phải cam kết không còn lỗi.
 
 UC28: be/notifications — 23 kiểm tra đạt; tổng các bộ chức năng đến đây 595 kiểm tra.
+
+UC29–32: be/chat — 32 kiểm tra đạt, 23 hồi quy thông báo đạt. Tổng bộ chức năng 627.

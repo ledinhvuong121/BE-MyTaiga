@@ -7,6 +7,10 @@ public partial class ChatParticipant
 {
     public long ChatRoomId { get; set; }
 
+    public bool IsActive { get; set; } = true;
+
+    public long LastReadMessageId { get; set; }
+
     public long UserId { get; set; }
 
     public DateTime JoinedAt { get; set; }

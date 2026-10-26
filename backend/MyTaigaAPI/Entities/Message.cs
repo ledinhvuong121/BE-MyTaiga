@@ -5,6 +5,8 @@ namespace MyTaigaAPI.Entities;
 
 public partial class Message
 {
+    public DateTime? PushedAt { get; set; }
+
     public long MessageId { get; set; }
 
     public long ChatRoomId { get; set; }
