@@ -1,0 +1,61 @@
+PASS anonymous Bug create denied
+PASS outsider Bug create denied
+PASS Admin no Bug bypass
+PASS cross-project Bug creation denied
+PASS missing Task
+PASS invalid Task id
+PASS blank title
+PASS blank reproduction
+PASS long title
+PASS long description
+PASS long environment
+PASS invalid severity
+PASS invalid priority
+PASS Member reports Bug
+PASS Task-scoped create alias
+PASS outsider Bug detail denied
+PASS Admin Bug detail denied
+PASS outsider Bug list denied
+PASS Member edits Bug
+PASS Member sets Bug priority
+PASS invalid priority patch
+PASS foreign Bug assignee denied
+PASS locked Bug assignee denied
+PASS Member assigns Bug within project
+PASS repeat Bug assignment conflict
+PASS invalid status filter
+PASS invalid severity filter
+PASS invalid priority filter
+PASS invalid page
+PASS invalid page size
+PASS pagination overflow
+PASS foreign Task filter denied
+PASS foreign assignee filter denied
+PASS invalid workflow enum
+PASS cannot skip directly to resolved
+PASS cannot close OPEN Bug directly
+PASS start Bug work
+PASS resolve Bug
+PASS close resolved Bug
+PASS repeat close conflict
+PASS reopen closed Bug
+PASS restart reopened Bug
+PASS Bug detail includes bounded comments/files/history
+PASS removed member loses Bug access
+PASS must reassign Bug from departed worker
+PASS clear obsolete Bug assignment
+PASS resolve after unassigning departed worker
+PASS reopen resolved Bug
+PASS keep former reporter in Bug history
+PASS report newly found Bug after Sprint closure
+PASS Task deletion blocked while Bug/evidence exists
+PASS delete Bug without cascading Task evidence
+PASS deleted Bug missing
+PASS invalid Bug id
+PASS missing Bug
+PASS invalid transition rolls back
+PASS closed project Bug create denied
+PASS closed project Bug mutation denied
+PASS closed project Bug readable
+PASS deleted project Bug hidden
+PASS ALL: 64 checks

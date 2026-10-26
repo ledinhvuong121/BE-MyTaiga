@@ -1,0 +1,59 @@
+PASS anonymous Task create denied
+PASS outsider Task create denied
+PASS admin has no Task bypass
+PASS blank title
+PASS long title
+PASS long description
+PASS invalid priority
+PASS invalid Sprint id
+PASS Member cannot set priority
+PASS Member cannot self-assign via create
+PASS Member cannot set deadline
+PASS foreign assignee denied
+PASS locked assignee denied
+PASS cross-project Epic denied
+PASS cross-project Sprint denied
+PASS Member creates ordinary Task
+PASS outsider detail denied
+PASS anonymous detail denied
+PASS Member edits Task
+PASS Member reports progress
+PASS completion must use Board DONE
+PASS negative progress denied
+PASS Member assign denied
+PASS Member priority denied
+PASS Member deadline denied
+PASS Member Subtask denied
+PASS Manager assigns member
+PASS repeat assignment conflict
+PASS foreign reassignment denied
+PASS Manager sets priority
+PASS Manager sets offset deadline
+PASS Manager clears deadline
+PASS Manager creates Subtask
+PASS Subtask scope mismatch
+PASS cross-project parent denied
+PASS cannot delete parent with Subtask
+PASS Member deletes leaf Task
+PASS invalid Task page
+PASS invalid Board status filter
+PASS cross-project Sprint filter denied
+PASS DONE progress protected
+PASS DONE parent cannot receive Subtask
+PASS Member cannot read Manager overdue report
+PASS Manager deadline alerts
+PASS delete blocked by Comment
+PASS delete blocked by Attachment
+PASS delete blocked by Bug
+PASS former reporter preserved after leaving
+PASS removed Member loses Task access
+PASS closed Sprint Task read-only
+PASS closed Sprint create denied
+PASS Member deletes simple Task
+PASS deleted Task missing
+PASS invalid Task id
+PASS missing Task
+PASS closed project Task create denied
+PASS closed project Task remains readable
+PASS deleted project Task hidden
+PASS ALL: 61 checks

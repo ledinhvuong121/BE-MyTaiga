@@ -1,0 +1,42 @@
+PASS anonymous backlog create denied
+PASS outsider backlog denied
+PASS member backlog create denied
+PASS admin backlog create denied
+PASS project scope required
+PASS blank title
+PASS long title
+PASS negative story points
+PASS invalid priority
+PASS invalid status
+PASS invalid epic
+PASS cannot fake sprint membership
+PASS create PBI
+PASS invalid status filter
+PASS foreign epic filter denied
+PASS page size validation
+PASS outsider detail denied
+PASS member update denied
+PASS member delete denied
+PASS cannot move PBI to foreign project
+PASS update PBI
+PASS change priority
+PASS member priority denied
+PASS invalid priority change
+PASS duplicate order ids
+PASS invalid order ids
+PASS incomplete ordering
+PASS foreign item ordering
+PASS member order denied
+PASS reorder entire epic
+PASS cannot delete sprint-linked PBI
+PASS cannot return sprint-linked PBI to ready
+PASS update sprint-linked PBI
+PASS delete unlinked PBI
+PASS deleted PBI missing
+PASS invalid PBI id
+PASS missing PBI
+PASS closed project create denied
+PASS closed project priority denied
+PASS closed project backlog readable
+PASS deleted project backlog hidden
+PASS ALL: 43 checks

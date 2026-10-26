@@ -1,0 +1,29 @@
+PASS anonymous admin denied
+PASS USER cannot read admin users
+PASS USER cannot read admin roles
+PASS USER cannot read admin system-config
+PASS USER cannot read admin activity-logs
+PASS system roles list
+PASS Admin creates USER
+PASS duplicate account rejected
+PASS USER cannot create admin account
+PASS admin search users
+PASS invalid status filter
+PASS admin pagination overflow
+PASS cannot create second ADMIN
+PASS cannot demote only ADMIN
+PASS project role is not system role
+PASS same system role idempotent
+PASS missing user role target
+PASS USER cannot change config
+PASS file size cap enforced
+PASS secrets cannot be configured via API
+PASS unsafe extension config rejected
+PASS invalid batch is all-or-nothing
+PASS valid configuration update
+PASS manager permissions scope
+PASS member permissions scope
+PASS ADMIN no project permissions bypass
+PASS ADMIN system permissions
+PASS system audit history
+PASS ALL: 29 checks

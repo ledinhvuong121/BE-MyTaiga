@@ -1,0 +1,31 @@
+PASS anonymous Board denied
+PASS outsider Board denied
+PASS admin Board denied
+PASS Member reads empty Board
+PASS anonymous move denied
+PASS outsider move denied
+PASS admin move denied
+PASS foreign project move denied
+PASS invalid destination denied
+PASS negative position denied
+PASS out-of-range position denied
+PASS reorder within column
+PASS Member moves to IN_PROGRESS
+PASS WIP full move denied
+PASS complete Task through Board
+PASS reopen Task through Board
+PASS parent waits for unfinished Subtask
+PASS complete Subtask
+PASS complete parent after Subtask
+PASS cannot reopen Subtask under DONE parent
+PASS reopen child after parent
+PASS Board page size validation
+PASS Board pagination overflow
+PASS foreign assignee filter denied
+PASS closed Sprint card cannot move
+PASS closed project cannot move
+PASS closed project Board readable
+PASS deleted project Board hidden
+PASS invalid project id
+PASS missing Task move
+PASS ALL: 34 checks

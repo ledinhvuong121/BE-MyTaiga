@@ -5,7 +5,7 @@ using MyTaigaAPI.Hubs;
 
 namespace MyTaigaAPI.Services;
 
-public class NotificationDispatcher(IServiceScopeFactory scopes,IHubContext<NotificationsHub> hub,ILogger<NotificationDispatcher> logger):BackgroundService
+public class NotificationDispatcher(IServiceScopeFactory scopes,IHubContext<NotificationsHub> hub,IHubContext<ChatHub> chat,ILogger<NotificationDispatcher> logger):BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -19,7 +19,13 @@ public class NotificationDispatcher(IServiceScopeFactory scopes,IHubContext<Noti
                 {
                     var recipient=await db.Users.Where(u=>u.UserId==n.UserId&&u.Status==1).Select(u=>new{u.UserId,u.TokenVersion}).SingleOrDefaultAsync(stoppingToken);
                     if(recipient is not null&&await NotificationScope.Visible(db,n.UserId).AnyAsync(v=>v.NotificationId==n.NotificationId,stoppingToken))
-                        await hub.Clients.Group(NotificationsHub.Group(recipient.UserId,recipient.TokenVersion)).SendAsync("notificationReceived",NotificationScope.Details(n),stoppingToken);
+                    {
+                        var data=NotificationScope.Details(n);
+                        var target=hub.Clients.Group(NotificationsHub.Group(recipient.UserId,recipient.TokenVersion));
+                        await target.SendAsync("notificationReceived",data,stoppingToken);
+                        await target.SendAsync("notification.new",data,stoppingToken);
+                        await chat.Clients.Group(ChatHub.Group(recipient.UserId,recipient.TokenVersion)).SendAsync("notification.new",data,stoppingToken);
+                    }
                     n.PushedAt=DateTime.UtcNow;
                 }
                 if(batch.Count>0)await db.SaveChangesAsync(stoppingToken);

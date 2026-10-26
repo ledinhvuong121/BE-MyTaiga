@@ -1,0 +1,87 @@
+[
+  {
+    "result": "PASS ALL: 42 checks",
+    "suite": "projects",
+    "log": "test-logs/2026-10-26/projects.txt"
+  },
+  {
+    "result": "PASS ALL: 39 checks",
+    "suite": "members",
+    "log": "test-logs/2026-10-26/members.txt"
+  },
+  {
+    "result": "PASS ALL: 39 checks",
+    "suite": "departments",
+    "log": "test-logs/2026-10-26/departments.txt"
+  },
+  {
+    "result": "PASS ALL: 38 checks",
+    "suite": "epics",
+    "log": "test-logs/2026-10-26/epics.txt"
+  },
+  {
+    "result": "PASS ALL: 43 checks",
+    "suite": "backlog",
+    "log": "test-logs/2026-10-26/backlog.txt"
+  },
+  {
+    "result": "PASS ALL: 58 checks",
+    "suite": "sprints",
+    "log": "test-logs/2026-10-26/sprints.txt"
+  },
+  {
+    "result": "PASS ALL: 61 checks",
+    "suite": "tasks",
+    "log": "test-logs/2026-10-26/tasks.txt"
+  },
+  {
+    "result": "PASS ALL: 34 checks",
+    "suite": "board",
+    "log": "test-logs/2026-10-26/board.txt"
+  },
+  {
+    "result": "PASS ALL: 32 checks",
+    "suite": "wip",
+    "log": "test-logs/2026-10-26/wip.txt"
+  },
+  {
+    "result": "PASS ALL: 61 checks",
+    "suite": "flow",
+    "log": "test-logs/2026-10-26/flow.txt"
+  },
+  {
+    "result": "PASS ALL: 64 checks",
+    "suite": "bugs",
+    "log": "test-logs/2026-10-26/bugs.txt"
+  },
+  {
+    "result": "PASS ALL: 28 checks",
+    "suite": "comments",
+    "log": "test-logs/2026-10-26/comments.txt"
+  },
+  {
+    "result": "PASS ALL: 33 checks",
+    "suite": "attachments",
+    "log": "test-logs/2026-10-26/attachments.txt"
+  },
+  {
+    "result": "PASS ALL: 23 checks",
+    "suite": "notifications",
+    "log": "test-logs/2026-10-26/notifications.txt"
+  },
+  {
+    "result": "PASS ALL: 33 checks",
+    "suite": "chat",
+    "log": "test-logs/2026-10-26/chat.txt"
+  },
+  {
+    "result": "PASS ALL: 29 checks",
+    "suite": "admin",
+    "log": "test-logs/2026-10-26/admin.txt"
+  },
+  {
+    "result": "PASS ALL: 36 checks",
+    "suite": "auth",
+    "log": "test-logs/2026-10-26/auth.txt"
+  }
+]

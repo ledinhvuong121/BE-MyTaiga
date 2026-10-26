@@ -1,0 +1,55 @@
+PASS anonymous denied wip
+PASS Member denied wip
+PASS outsider denied wip
+PASS Admin denied wip
+PASS anonymous denied throughput
+PASS Member denied throughput
+PASS outsider denied throughput
+PASS Admin denied throughput
+PASS anonymous denied throughput/sprints
+PASS Member denied throughput/sprints
+PASS outsider denied throughput/sprints
+PASS Admin denied throughput/sprints
+PASS anonymous denied cycle-time
+PASS Member denied cycle-time
+PASS outsider denied cycle-time
+PASS Admin denied cycle-time
+PASS anonymous denied cycle-time/average
+PASS Member denied cycle-time/average
+PASS outsider denied cycle-time/average
+PASS Admin denied cycle-time/average
+PASS anonymous denied work-item-age
+PASS Member denied work-item-age
+PASS outsider denied work-item-age
+PASS Admin denied work-item-age
+PASS WIP counts only working/review columns
+PASS per-Task Cycle Time known answers
+PASS Cycle Time average excludes invalid timestamps
+PASS age excludes DONE, not-started and future-started
+PASS find stale work by age threshold
+PASS first-completion Throughput known count
+PASS compare Sprint Throughput
+PASS foreign Sprint denied wip
+PASS invalid Sprint denied wip
+PASS foreign Sprint denied throughput
+PASS invalid Sprint denied throughput
+PASS foreign Sprint denied cycle-time
+PASS invalid Sprint denied cycle-time
+PASS foreign Sprint denied cycle-time/average
+PASS invalid Sprint denied cycle-time/average
+PASS foreign Sprint denied work-item-age
+PASS invalid Sprint denied work-item-age
+PASS invalid date
+PASS reversed interval
+PASS too long interval
+PASS future interval
+PASS overflow interval
+PASS negative fractional threshold rejected
+PASS large fractional threshold rejected
+PASS cycle page size validation
+PASS age pagination overflow
+PASS Sprint completion history preserved after Task deletion
+PASS closed project metrics readable
+PASS deleted project metrics hidden
+PASS invalid project id
+PASS ALL: 61 checks

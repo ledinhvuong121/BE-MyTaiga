@@ -1,0 +1,18 @@
+PASS anonymous inbox denied
+PASS anonymous SignalR denied
+PASS query token is not accepted on ordinary API
+PASS cannot read another user notification
+PASS mark own notification read
+PASS repeat read idempotent
+PASS inbox page size validation
+PASS inbox pagination overflow
+PASS invalid notification id
+PASS departed member notification content hidden
+PASS mark all visible own notifications read
+PASS outsider audit history denied
+PASS Admin no project audit bypass
+PASS filtered activity history
+PASS history pagination validation
+PASS revoked token inbox denied
+PASS revoked token hub reconnect denied
+PASS ALL: 23 checks

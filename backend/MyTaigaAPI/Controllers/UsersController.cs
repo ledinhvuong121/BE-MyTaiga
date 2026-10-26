@@ -14,10 +14,12 @@ namespace MyTaigaAPI.Controllers;
 public class UsersController : ControllerBase
 {
     private readonly ScrumbanDbContext _db;
+    private readonly IConfiguration _configuration;
 
-    public UsersController(ScrumbanDbContext db)
+    public UsersController(ScrumbanDbContext db, IConfiguration configuration)
     {
         _db = db;
+        _configuration = configuration;
     }
 
     [HttpGet("me")]
@@ -239,7 +241,7 @@ public async Task<IActionResult> UpdateAvatar(
         });
     }
 
-    var directory = Path.Combine(
+    var directory = _configuration["Storage:AvatarsRoot"] ?? Path.Combine(
         environment.ContentRootPath, "App_Data", "avatars");
 
     Directory.CreateDirectory(directory);
@@ -320,11 +322,8 @@ public async Task<IActionResult> GetAvatar(
     if (!isCurrentAvatar)
         return NotFound();
 
-    var filePath = Path.Combine(
-        environment.ContentRootPath,
-        "App_Data",
-        "avatars",
-        fileName);
+    var root = _configuration["Storage:AvatarsRoot"] ?? Path.Combine(environment.ContentRootPath,"App_Data","avatars");
+    var filePath = Path.Combine(root,fileName);
 
     if (!System.IO.File.Exists(filePath))
         return NotFound();

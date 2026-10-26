@@ -1,6 +1,6 @@
 # Chat UC29–UC32
 
-32 kiểm tra HTTP/SQL/WebSocket thật đạt. Phòng riêng chỉ cho người cùng dự án;
+33 kiểm tra HTTP/SQL/WebSocket thật đạt. Phòng riêng chỉ cho người cùng dự án;
 canonical pair chống trùng; nhóm do Manager tạo/quản lý, thành viên phải thuộc dự án.
 Rời dự án hoặc bị bỏ khỏi phòng mất quyền xem, tải tệp và nhận sự kiện.
 Bỏ khỏi phòng giữ bản ghi người gửi để bảo toàn lịch sử/FK; thêm lại kích hoạt lại.
@@ -14,3 +14,5 @@ SignalR /hubs/chat event message.new. Khôi phục lịch sử từ REST khi n�
 outbox có thể phát lặp, frontend khử trùng theo messageId. Không có delivery receipt.
 Tệp dùng cùng bộ xác minh và kho riêng tư như UC27, không công khai đường dẫn đĩa.
 Chạy Database/15_ChatDelivery.sql sau 14 trước khi khởi động phiên bản này.
+
+Sự kiện notification.new được phát trên hub chat, đã xác minh bằng WebSocket thật.

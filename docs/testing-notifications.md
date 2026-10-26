@@ -9,3 +9,5 @@ Chạy script 14 sau script 13. Endpoint /hubs/notifications phát notificationR
 Outbox lưu cùng giao dịch nghiệp vụ; PushedAt là mốc thử phát, không phải xác nhận
 người dùng đã nhận/đọc. Client tải inbox khi kết nối lại và khử trùng notificationId.
 Có thể phát lặp khi tiến trình dừng giữa phát và lưu PushedAt.
+
+Sự kiện chuẩn tài liệu là notification.new (cả hai hub); notificationReceived giữ như alias tương thích.

@@ -1,0 +1,36 @@
+PASS anonymous list denied
+PASS outsider list denied
+PASS admin list denied
+PASS outsider add denied
+PASS admin add denied
+PASS invalid user id
+PASS missing user
+PASS cannot add system admin
+PASS cannot add locked user
+PASS cannot remove last manager
+PASS add defaults to MEMBER
+PASS duplicate membership
+PASS member cannot add
+PASS member cannot remove manager
+PASS member cannot promote self
+PASS reject system role assignment
+PASS no unsupported downgrade
+PASS member page size validation
+PASS member pagination overflow
+PASS invalid department filter
+PASS missing department filter
+PASS unfinished assignment blocks removal
+PASS remove member after work completed
+PASS removed member immediately loses access
+PASS missing member removal
+PASS promote member to manager
+PASS repeat promotion conflict
+PASS promoted manager can update project
+PASS closed project add denied
+PASS closed project remove denied
+PASS closed project promotion denied
+PASS deleted project members hidden
+PASS deleted project add denied
+PASS invalid project id
+PASS missing project
+PASS ALL: 39 checks

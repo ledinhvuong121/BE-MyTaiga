@@ -1,0 +1,37 @@
+PASS anonymous departments denied
+PASS outsider departments denied
+PASS admin departments denied
+PASS member cannot create department
+PASS outsider cannot create department
+PASS admin cannot create department
+PASS blank name
+PASS long name
+PASS long description
+PASS create department
+PASS duplicate normalized name
+PASS rename duplicate conflict
+PASS invalid page
+PASS invalid page size
+PASS cross-project edit denied
+PASS cross-project delete denied
+PASS member cannot assign self
+PASS cross-project assignment denied
+PASS invalid department id
+PASS nonmember cannot receive department
+PASS assign member department
+PASS repeat assignment conflict
+PASS occupied department cannot delete
+PASS transfer member department
+PASS delete vacated department
+PASS unassign department
+PASS update department
+PASS member denied PUT
+PASS member denied DELETE
+PASS invalid delete id
+PASS missing department
+PASS closed project create denied
+PASS closed project assign denied
+PASS closed project delete denied
+PASS closed project remains readable
+PASS deleted project departments hidden
+PASS ALL: 39 checks

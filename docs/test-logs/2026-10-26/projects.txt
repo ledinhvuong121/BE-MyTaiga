@@ -1,0 +1,38 @@
+PASS test database/JWT match
+PASS anonymous list denied
+PASS anonymous create denied
+PASS admin cannot create
+PASS blank name
+PASS long name
+PASS long description
+PASS reversed dates
+PASS invalid date
+PASS create project
+PASS duplicate creator/name conflict
+PASS outsider cannot read
+PASS admin has no project bypass
+PASS invalid page
+PASS oversized page
+PASS pagination overflow
+PASS deleted filter denied
+PASS invalid project id
+PASS missing project
+PASS member denied PUT
+PASS outsider denied PUT
+PASS anonymous denied PUT
+PASS member denied PATCH
+PASS outsider denied PATCH
+PASS anonymous denied PATCH
+PASS member denied DELETE
+PASS outsider denied DELETE
+PASS anonymous denied DELETE
+PASS manager update
+PASS rename conflict
+PASS manager close
+PASS repeat close conflict
+PASS closed project cannot update
+PASS manager soft delete
+PASS deleted detail hidden
+PASS repeat delete missing
+PASS revoked token denied
+PASS ALL: 42 checks

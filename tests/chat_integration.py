@@ -21,10 +21,11 @@ def main():
     call('POST',f'/api/v1/chat/rooms/{gid}/participants',m,{'userIds':[mid]},403,label='member cannot manage participants')
     call('GET',f'/api/v1/chat/rooms/{rid}/messages',x,expected=404,label='outsider history hidden')
     call('GET',f'/api/v1/chat/rooms/{rid}/messages',admin,expected=404,label='Admin no private chat bypass')
-    live=SignalR(m,'/hubs/chat');isolated=SignalR(x,'/hubs/chat')
+    live=SignalR(m,'/hubs/chat');notices=SignalR(m,'/hubs/chat');isolated=SignalR(x,'/hubs/chat')
     msg=call('POST',f'/api/v1/chat/rooms/{rid}/messages',o,{'content':'Hello Vietnamese'},201,label='send text')['data']
     event=live.event('message.new',15);assert event and event['messageId']==msg['messageId']
     assert isolated.event('message.new',1) is None;passed.append('real SignalR message only to participant')
+    notice=notices.event('notification.new',10);assert notice and notice['refId']==msg['messageId'];passed.append('report notification.new event on chat hub')
     assert call('GET','/api/v1/chat/unread-count',m)['data']['unreadCount']==1
     call('POST',f'/api/v1/chat/rooms/{rid}/messages',o,{'content':' '},400,label='empty message rejected')
     call('POST',f'/api/v1/chat/rooms/{rid}/messages',o,{'content':'x'*5001},400,label='oversized message rejected')
@@ -55,6 +56,6 @@ def main():
     call('GET',f'/api/v1/chat/rooms/{rid}/messages',m,expected=404,label='departed member loses private room shared scope')
     call('GET',f'/api/v1/chat/rooms/{gid}/messages',m,expected=404,label='departed member loses group history')
     read(path,m,404);passed.append('departed member loses chat files')
-    live.close();isolated.close()
+    live.close();notices.close();isolated.close()
     print(f'PASS ALL: {len(passed)} checks')
 if __name__=='__main__':main()
