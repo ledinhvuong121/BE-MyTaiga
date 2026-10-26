@@ -329,6 +329,9 @@ Xem `docs/testing-members.md`. Đã kiểm thử 39 trường hợp và chạy l
 
 # Quản lý dự án
 
+Board UC16–UC17 có dữ liệu cột/thẻ, lọc/tìm/phân trang và di chuyển/sắp xếp Task.
+Xem `docs/testing-board.md`; 34 kiểm tra Board và 61 hồi quy Task đã đạt.
+
 Task UC13–UC15 có CRUD/Subtask, phân công, tiến độ, deadline/priority và API cảnh báo.
 Xem `docs/testing-tasks.md`; chạy script 11 sau 10. 61 kiểm tra thực tế đã đạt.
 

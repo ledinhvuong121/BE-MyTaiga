@@ -13,6 +13,7 @@ Không đánh đồng entity/schema có sẵn với API đã hoàn thành.
 | UC7–UC8 Product Backlog | be/product-backlog | 43 kiểm tra HTTP + SQL |
 | UC11–UC12 Sprint/Burndown/đóng Sprint | be/sprints | 58 kiểm tra HTTP + SQL, 201 kiểm tra hồi quy đạt |
 | UC13–UC15 Task/Subtask/phân công/deadline/priority | be/tasks | 61 kiểm tra HTTP + SQL |
+| UC16–UC17 Board/move/lọc/tìm | be/board | 34 kiểm tra HTTP + SQL; UC16.3 giao diện frontend |
 
 Nhánh mới nhất chứa đủ các phần trên. Không đổi User Secrets, mật khẩu, email thử
 hoặc file avatar người dùng. Sprint bổ sung schema qua script 10 như ghi bên dưới.
@@ -22,14 +23,13 @@ Test API chạy ở 127.0.0.1:5159 với cấu hình tiến trình riêng, khôn
 
 ## Còn lại, chưa tuyên bố hoàn thành
 
-- UC16–UC17: Board và di chuyển/sắp xếp Task.
 - UC18–UC23: cấu hình/cảnh báo WIP, Flow Metrics.
 - Các nhóm Bug, bình luận/tệp, thông báo/SignalR, chat,
   thống kê/báo cáo, quản trị hệ thống và các UC còn lại trong báo cáo.
 - Kiểm thử tải lớn, rà soát toàn bộ bảo mật và bàn giao tích hợp frontend
   là công việc riêng, không được thay bằng các test chức năng này.
 
-Tiếp theo: Board, di chuyển và sắp xếp Task.
+Tiếp theo: WIP Limit và cảnh báo quá tải (UC18–UC19).
 Mapping Project–Sprint đã sửa thành một-nhiều; cần script 10 cho các tính năng Sprint mới.
 Ngày 2026-10-26 đã áp dụng script 10 bổ sung schema (không xóa dữ liệu) vào ScrumbanDB;
 database thử vẫn riêng và các kiểm thử không chạy trên dữ liệu người dùng.
