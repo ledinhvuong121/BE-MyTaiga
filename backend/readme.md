@@ -329,6 +329,9 @@ Xem `docs/testing-members.md`. Đã kiểm thử 39 trường hợp và chạy l
 
 # Quản lý dự án
 
+WIP UC18–UC19 có đặt/cập nhật/bỏ giới hạn, thống kê/cờ quá tải và API cảnh báo.
+Xem `docs/testing-wip.md`; 32 kiểm tra WIP đã đạt. UC19.4 dùng cờ isOverloaded để frontend tô cột.
+
 Board UC16–UC17 có dữ liệu cột/thẻ, lọc/tìm/phân trang và di chuyển/sắp xếp Task.
 Xem `docs/testing-board.md`; 34 kiểm tra Board và 61 hồi quy Task đã đạt.
 
