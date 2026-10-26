@@ -15,6 +15,8 @@ public partial class ScrumbanDbContext : DbContext
 
     public virtual DbSet<ActivityLog> ActivityLogs { get; set; }
 
+    public DbSet<TaskCompletionHistory> TaskCompletionHistories { get; set; }
+
     public virtual DbSet<Attachment> Attachments { get; set; }
 
     public virtual DbSet<BoardColumn> BoardColumns { get; set; }
@@ -83,6 +85,12 @@ public partial class ScrumbanDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<TaskCompletionHistory>(entity =>
+        {
+            entity.ToTable("TaskCompletionHistory");
+            entity.HasKey(e => e.TaskId);
+            entity.Property(e => e.TaskId).ValueGeneratedNever();
+        });
         modelBuilder.Entity<ActivityLog>(entity =>
         {
             entity.ToTable("ActivityLog");

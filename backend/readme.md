@@ -31,6 +31,7 @@ Trên database mới, chạy các script theo thứ tự:
 6. Database/09_UserCreatedAtUtc.sql
 7. Database/10_SprintBurndownEvents.sql
 8. Database/11_TaskUtcHistory.sql
+9. Database/12_FlowMetricsUtcHistory.sql
 
 Không chạy lại các script tạo bảng và seed trên database đã có dữ liệu.
 
@@ -328,6 +329,10 @@ Xem `docs/testing-departments.md`; 39 kiểm tra phòng ban và 81 kiểm tra h�
 Xem `docs/testing-members.md`. Đã kiểm thử 39 trường hợp và chạy lại 42 kiểm tra dự án.
 
 # Quản lý dự án
+
+Flow Metrics UC20–UC23 có WIP, Throughput/so sánh Sprint, Cycle Time và tuổi việc/tồn đọng.
+Xem `docs/testing-flow.md`; chạy script 12 sau 11. 61 kiểm tra công thức/quyền/lịch sử đã đạt.
+Throughput có metadata báo phần lịch sử trước nâng cấp chưa đầy đủ, không tự suy diễn dữ liệu cũ.
 
 WIP UC18–UC19 có đặt/cập nhật/bỏ giới hạn, thống kê/cờ quá tải và API cảnh báo.
 Xem `docs/testing-wip.md`; 32 kiểm tra WIP đã đạt. UC19.4 dùng cờ isOverloaded để frontend tô cột.

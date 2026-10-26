@@ -100,7 +100,9 @@ public class SprintsController(ScrumbanDbContext db) : ControllerBase
         if (operation == "DELETE")
         {
             if (sprint.Status != "PLANNED" || await db.Tasks.AnyAsync(t => t.SprintId == id, ct) ||
-                await db.FlowMetrics.AnyAsync(f => f.SprintId == id, ct)) return Reply(409, "Chỉ xóa Sprint dự kiến chưa có Task hoặc số liệu.");
+                await db.FlowMetrics.AnyAsync(f => f.SprintId == id, ct) ||
+                await db.TaskCompletionHistories.AnyAsync(h => h.SprintId == id, ct))
+                return Reply(409, "Chỉ xóa Sprint dự kiến chưa có Task hoặc lịch sử/số liệu.");
             var links = await db.SprintBacklogItems.Include(b => b.Pbi).Where(b => b.SprintId == id).ToListAsync(ct);
             foreach (var link in links) if (link.Pbi.Status == "IN_SPRINT") link.Pbi.Status = "READY";
             db.SprintBacklogItems.RemoveRange(links);
