@@ -53,3 +53,5 @@ Kết quả kiểm thử là bằng chứng cho các trường hợp đã chạy
 UC28: be/notifications — 23 kiểm tra đạt; tổng các bộ chức năng đến đây 595 kiểm tra.
 
 UC29–32: be/chat — 32 kiểm tra đạt, 23 hồi quy thông báo đạt. Tổng bộ chức năng 627.
+
+UC33–35: be/system-admin — 29 kiểm tra đạt. Tổng bộ chức năng 656.

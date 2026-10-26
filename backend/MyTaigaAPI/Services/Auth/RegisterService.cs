@@ -25,7 +25,7 @@ public class RegisterService
         string Message,
         long? UserId)> RegisterAsync(
         RegisterRequest request,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default, long? actorId = null)
     {
         var fullName = request.FullName.Trim();
         var email = request.Email.Trim();
@@ -119,8 +119,8 @@ public class RegisterService
 
             _db.ActivityLogs.Add(new ActivityLog
             {
-                UserId = newUser.UserId,
-                Action = "USER_REGISTERED",
+                UserId = actorId ?? newUser.UserId,
+                Action = actorId.HasValue ? "ADMIN_USER_CREATED" : "USER_REGISTERED",
                 EntityType = "USER",
                 EntityId = newUser.UserId,
                 Description = "Đăng ký tài khoản người dùng.",

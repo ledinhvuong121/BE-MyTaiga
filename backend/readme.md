@@ -372,3 +372,5 @@ Xem `docs/testing-projects.md` để lấy request/response, quy tắc và cách
 Thông báo: chạy Database/14_NotificationOutbox.sql sau script 13. GET /api/v1/notifications, GET /api/v1/notifications/unread-count, PATCH /api/v1/notifications/{id}/read, PATCH /api/v1/notifications/read-all. Nhật ký: GET /api/v1/projects/{id}/activity-logs. SignalR: /hubs/notifications; event notificationReceived. Xem docs/testing-notifications.md.
 
 Chat UC29–32: chạy Database/15_ChatDelivery.sql; API và hợp đồng realtime ở docs/testing-chat.md.
+
+Quản trị UC33 và quyền UC34–35: hợp đồng API và giới hạn cấu hình tại docs/testing-admin.md.

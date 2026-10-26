@@ -155,4 +155,3 @@ app.MapHub<NotificationsHub>("/hubs/notifications", options => options.CloseOnAu
 
 app.MapHub<ChatHub>("/hubs/chat", options => options.CloseOnAuthenticationExpiration = true);
 app.Run();
-

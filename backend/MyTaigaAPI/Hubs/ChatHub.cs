@@ -16,4 +16,3 @@ public class ChatHub:Hub
     }
     // No client method may join an arbitrary user/project group.
 }
-
