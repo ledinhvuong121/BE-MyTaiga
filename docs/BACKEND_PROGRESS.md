@@ -16,6 +16,7 @@ Không đánh đồng entity/schema có sẵn với API đã hoàn thành.
 | UC16–UC17 Board/move/lọc/tìm | be/board | 34 kiểm tra HTTP + SQL; UC16.3 giao diện frontend |
 | UC18–UC19 WIP Limit/cảnh báo | be/wip-limits | 32 kiểm tra HTTP + SQL; UC19.4 hiển thị bởi frontend |
 | UC20–UC23 Flow Metrics | be/flow-metrics | 61 kiểm tra HTTP + SQL, 386 hồi quy đạt |
+| UC24–UC25 Bug | be/bugs | 64 kiểm tra HTTP + SQL |
 
 Nhánh mới nhất chứa đủ các phần trên. Không đổi User Secrets, mật khẩu, email thử
 hoặc file avatar người dùng. Sprint bổ sung schema qua script 10 như ghi bên dưới.
@@ -25,12 +26,12 @@ Test API chạy ở 127.0.0.1:5159 với cấu hình tiến trình riêng, khôn
 
 ## Còn lại, chưa tuyên bố hoàn thành
 
-- Các nhóm Bug, bình luận/tệp, thông báo/SignalR, chat,
+- Các nhóm bình luận/tệp, thông báo/SignalR, chat,
   thống kê/báo cáo, quản trị hệ thống và các UC còn lại trong báo cáo.
 - Kiểm thử tải lớn, rà soát toàn bộ bảo mật và bàn giao tích hợp frontend
   là công việc riêng, không được thay bằng các test chức năng này.
 
-Tiếp theo: Bug (UC24–UC25), sau đó bình luận/tệp/thông báo/chat.
+Tiếp theo: bình luận/tệp/thông báo/chat và quản trị, rà soát toàn bộ Chương 2.
 Flow Metrics cần script 12 sau 11; mốc lịch sử trước nâng cấp có thể thiếu và được đánh dấu trong API.
 Mapping Project–Sprint đã sửa thành một-nhiều; cần script 10 cho các tính năng Sprint mới.
 Ngày 2026-10-26 đã áp dụng script 10 bổ sung schema (không xóa dữ liệu) vào ScrumbanDB;

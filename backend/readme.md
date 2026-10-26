@@ -32,6 +32,7 @@ Trên database mới, chạy các script theo thứ tự:
 7. Database/10_SprintBurndownEvents.sql
 8. Database/11_TaskUtcHistory.sql
 9. Database/12_FlowMetricsUtcHistory.sql
+10. Database/13_BugUtcWorkflow.sql
 
 Không chạy lại các script tạo bảng và seed trên database đã có dữ liệu.
 
@@ -329,6 +330,9 @@ Xem `docs/testing-departments.md`; 39 kiểm tra phòng ban và 81 kiểm tra h�
 Xem `docs/testing-members.md`. Đã kiểm thử 39 trường hợp và chạy lại 42 kiểm tra dự án.
 
 # Quản lý dự án
+
+Bug UC24–UC25 có CRUD, lọc/tìm, phân công, ưu tiên và workflow xử lý/đóng/mở lại.
+Xem `docs/testing-bugs.md`; script 13 cập nhật UTC. 64 kiểm tra đã đạt.
 
 Flow Metrics UC20–UC23 có WIP, Throughput/so sánh Sprint, Cycle Time và tuổi việc/tồn đọng.
 Xem `docs/testing-flow.md`; chạy script 12 sau 11. 61 kiểm tra công thức/quyền/lịch sử đã đạt.
