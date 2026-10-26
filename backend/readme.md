@@ -331,6 +331,9 @@ Xem `docs/testing-members.md`. Đã kiểm thử 39 trường hợp và chạy l
 
 # Quản lý dự án
 
+Bình luận UC26 có CRUD theo quyền tác giả, mention thành viên và Notification cùng transaction.
+Xem `docs/testing-comments.md`; 28 kiểm tra đã đạt. Có script `tests/start-isolated.ps1` chạy backend kiểm thử riêng.
+
 Bug UC24–UC25 có CRUD, lọc/tìm, phân công, ưu tiên và workflow xử lý/đóng/mở lại.
 Xem `docs/testing-bugs.md`; script 13 cập nhật UTC. 64 kiểm tra đã đạt.
 
