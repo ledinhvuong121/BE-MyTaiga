@@ -103,6 +103,7 @@ builder.Services.AddScoped<JwtTokenService>();
 builder.Services.AddScoped<SystemConfigService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<AvatarImageService>();
+builder.Services.AddScoped<TaskFileStore>();
 var emailProvider = builder.Configuration["Email:Provider"]
     ?? "Development";
 

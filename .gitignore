@@ -37,6 +37,8 @@ secrets.json
 
 # Uploaded files
 **/App_Data/avatars/
+**/App_Data/task-files/
+**/App_Data/test-*/
 
 # Development emails contain password reset links
 **/App_Data/dev-emails/

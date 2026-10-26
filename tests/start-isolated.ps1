@@ -9,6 +9,7 @@ $env:Jwt__Key='integration-test-only-key-not-for-production-20261025'
 $env:Jwt__Issuer='MyTaigaIntegration'
 $env:Jwt__Audience='MyTaigaIntegration'
 $env:Email__Provider='Development'
+$env:Storage__TaskFilesRoot="$PSScriptRoot/../backend/MyTaigaAPI/App_Data/test-task-files"
 $env:Frontend__ResetPasswordUrl='http://localhost:5173/reset-password'
 $env:ASPNETCORE_ENVIRONMENT='Development'
 $env:Logging__LogLevel__Default='Critical'

@@ -331,6 +331,9 @@ Xem `docs/testing-members.md`. Đã kiểm thử 39 trường hợp và chạy l
 
 # Quản lý dự án
 
+Tệp Task UC27 có multipart upload, metadata/list/preview/download và xóa theo quyền.
+Xem `docs/testing-attachments.md`; 33 kiểm tra file đạt. App_Data/task-files không đẩy lên Git.
+
 Bình luận UC26 có CRUD theo quyền tác giả, mention thành viên và Notification cùng transaction.
 Xem `docs/testing-comments.md`; 28 kiểm tra đã đạt. Có script `tests/start-isolated.ps1` chạy backend kiểm thử riêng.
 
