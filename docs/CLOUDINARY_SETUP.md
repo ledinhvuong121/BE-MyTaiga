@@ -21,7 +21,7 @@ máy. Kết quả data.avatar phải là https://res.cloudinary.com/<cloud>/imag
 Ảnh Task: POST /api/v1/tasks/{id}/attachments với field files.
 Ảnh chat: POST /api/v1/chat/rooms/{id}/messages multipart files (+ content tùy chọn).
 
-Database lưu URL chuẩn secure_url. URL avatar dùng trực tiếp trong img src, không
+Database lưu URL HTTPS chuẩn hóa từ secure_url; bỏ đoạn chữ ký CDN nếu Cloudinary trả kèm. URL avatar dùng trực tiếp trong img src, không
 cần bearer trong thẻ img. Avatar là ảnh nhận diện công khai cho những ai biết URL.
 Ảnh Task/chat upload authenticated; API trả URL cloud có chữ ký hết hạn sau 10 phút.
 Frontend lấy lại metadata khi URL hết hạn, không lưu URL có chữ ký vào database.
@@ -82,3 +82,12 @@ Chế độ này giữ nguyên Cloud name/API Key, chỉ hỏi lại Secret và 
 chuỗi dấu sao. Nội dung nhập được che; không gửi giá trị thật vào chat hoặc ảnh chụp.
 
 Đã bỏ hoàn toàn JSON stdin để tránh lỗi 0xEF/BOM trên Windows PowerShell. Script gọi dotnet user-secrets set cho từng khóa. Đã kiểm thử chính file configure-cloudinary.ps1 trên Windows PowerShell 5.1 với console UTF-8 BOM, xác nhận lưu và đọc lại bằng User Secrets giả lập riêng; không dùng hoặc in Secret thật.
+
+## Kết quả trên máy chủ dự án ngày 27/10/2026
+
+Đã cấu hình và kiểm thử Cloudinary thật; 1 avatar cũ đã chuyển, giữ nguồn.
+Xem [báo cáo thực nghiệm](CLOUDINARY_LIVE_REPORT_2026-10-27.md).
+Kiểm thử cloud thật có opt-in: khởi động tests/start-isolated.ps1 với -RealCloudinary
+và database MyTaiga_*Checks_*, rồi chạy tests/cloudinary_live_integration.py
+--allow-real-cloud. Kiểm thử dùng quota thật và tạo manifest dọn asset tại App_Data;
+chỉ dọn asset trong manifest của database kiểm thử, không dọn ảnh người dùng thật.

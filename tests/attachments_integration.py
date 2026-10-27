@@ -1,4 +1,4 @@
-import io,json,struct,urllib.request,urllib.error,uuid,zlib,zipfile
+import io,json,struct,urllib.request,urllib.error,urllib.parse,uuid,zlib,zipfile
 from pathlib import Path
 from projects_integration import BASE,call,sql,user,token_for_admin,passed
 
@@ -17,7 +17,9 @@ def upload(path,token,files,expected=201,label=None):
     return json.loads(raw) if raw else None
 
 def read(path,token,expected=200,extra=None):
-    headers={'Authorization':'Bearer '+token} if token else {}
+    # Cloud signed URLs are capability links; never forward application JWTs to another origin.
+    local=not path.startswith('http') or urllib.parse.urlsplit(path).netloc==urllib.parse.urlsplit(BASE).netloc
+    headers={'Authorization':'Bearer '+token} if token and local else {}
     headers.update(extra or {})
     try:r=urllib.request.urlopen(urllib.request.Request(path if path.startswith("http") else BASE+path,headers=headers),timeout=30)
     except urllib.error.HTTPError as error:r=error

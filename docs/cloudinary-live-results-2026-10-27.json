@@ -1,0 +1,68 @@
+{
+  "date": "2026-10-27",
+  "serviceChecks": [
+    {
+      "kind": "avatar",
+      "upload": "PASS",
+      "delivery": 200,
+      "bytes": 68,
+      "privateUnsignedStatus": null
+    },
+    {
+      "kind": "task",
+      "upload": "PASS",
+      "delivery": 200,
+      "bytes": 68,
+      "privateUnsignedStatus": 401
+    },
+    {
+      "kind": "chat",
+      "upload": "PASS",
+      "delivery": 200,
+      "bytes": 68,
+      "privateUnsignedStatus": 401
+    }
+  ],
+  "apiChecks": [
+    "avatar API uploads real cloud image; DB stores URL; public delivery 200",
+    "Task image API stores unsigned cloud URL; signed preview/download return correct bytes",
+    "unsigned private Task cloud URL denies anonymous access",
+    "Task metadata rejects outsider and anonymous requests",
+    "Chat image API stores cloud URL; signed preview/download return correct bytes"
+  ],
+  "databaseForApiChecks": "MyTaiga_CloudInstallChecks_20261027",
+  "productionMigration": {
+    "date": "2026-10-27",
+    "database": "ScrumbanDB",
+    "backupPath": "C:\\Users\\ASUS\\AppData\\Local\\MyTaiga\\MigrationBackups\\cloudinary-images-20261027T082146172.json",
+    "items": [
+      {
+        "kind": "avatar",
+        "id": 2,
+        "status": "MIGRATED"
+      }
+    ],
+    "checks": [
+      {
+        "kind": "avatar",
+        "id": 2,
+        "urlStored": true,
+        "delivery": 200,
+        "originalFilePreserved": true
+      }
+    ]
+  },
+  "regression": {
+    "missing_data": 29,
+    "auth": 36,
+    "attachments": 33,
+    "chat": 33,
+    "notifications": 23,
+    "total": 154
+  },
+  "build": {
+    "errors": 0,
+    "warnings": 0
+  },
+  "testAssetCleanup": "Destroy requested for all six smoke/API fixture assets; deletion not independently verified."
+}

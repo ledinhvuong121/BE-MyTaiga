@@ -23,7 +23,10 @@ public class CloudinaryImages(HttpClient http,IConfiguration config,IWebHostEnvi
         if(!IsCloud(url))throw new CloudMediaException("URL ảnh không thuộc Cloudinary của dự án.");
         var path=new Uri(url).AbsolutePath.Split('/',StringSplitOptions.RemoveEmptyEntries);
         if(path.Length<5||path[2] is not("authenticated" or "upload"))throw new CloudMediaException("URL Cloudinary không hợp lệ.");
-        var start=Regex.IsMatch(path[3],"^v[0-9]+$")?4:3;var full=string.Join('/',path.Skip(start));var ext=Path.GetExtension(full);
+        var start=3;
+        if(Regex.IsMatch(path[start],"^s--[A-Za-z0-9_-]+--$"))start++;
+        if(start<path.Length&&Regex.IsMatch(path[start],"^v[0-9]+$"))start++;
+        var full=string.Join('/',path.Skip(start));var ext=Path.GetExtension(full);
         if(ext.Length<2)throw new CloudMediaException("Ảnh thiếu định dạng.");return(path[2],Uri.UnescapeDataString(full[..^ext.Length]),ext[1..]);
     }
     public string Delivery(string url,bool attachment=false)
@@ -37,7 +40,8 @@ public class CloudinaryImages(HttpClient http,IConfiguration config,IWebHostEnvi
     public async Task<string> UploadAsync(Stream input,string name,bool privateImage,CancellationToken ct)
     {
         var api=ApiBase;var publicId="mytaiga/"+(privateImage?"private/":"avatars/")+Guid.NewGuid().ToString("N");
-        var parameters=new SortedDictionary<string,string>(StringComparer.Ordinal){["public_id"]=publicId,["timestamp"]=DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(),["type"]=privateImage?"authenticated":"upload"};
+        var deliveryType=privateImage?"authenticated":"upload";
+        var parameters=new SortedDictionary<string,string>(StringComparer.Ordinal){["public_id"]=publicId,["timestamp"]=DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(),["type"]=deliveryType};
         using var form=new MultipartFormDataContent();foreach(var pair in parameters)form.Add(new StringContent(pair.Value),pair.Key);
         form.Add(new StringContent(Required("ApiKey")),"api_key");form.Add(new StringContent(Sign(parameters)),"signature");
         form.Add(new StreamContent(input),"file",name);
@@ -47,10 +51,19 @@ public class CloudinaryImages(HttpClient http,IConfiguration config,IWebHostEnvi
             if(!result.IsSuccessStatusCode)throw new CloudMediaException("Cloudinary từ chối upload; kiểm tra cấu hình/quota.");
             using var doc=JsonDocument.Parse(await result.Content.ReadAsStringAsync(ct));var url=doc.RootElement.GetProperty("secure_url").GetString();
             if(url is null||!IsCloud(url))throw new CloudMediaException("Cloudinary trả URL không hợp lệ.");var parsed=Parts(url);
-            if(parsed.PublicId!=publicId||parsed.Type!=parameters["type"])throw new CloudMediaException("Cloudinary trả tài nguyên không khớp.");return url;
+            if(parsed.PublicId!=publicId||parsed.Type!=deliveryType)
+            {
+                if(parsed.PublicId==publicId)await DeleteAsync(url);
+                throw new CloudMediaException("Cloudinary trả tài nguyên không khớp.");
+            }
+            // Authenticated uploads return a signed CDN URL. Persist its canonical
+            // unsigned form; issue short-lived download URLs only after authorization.
+            var uri=new Uri(url);var segments=uri.AbsolutePath.Split('/',StringSplitOptions.RemoveEmptyEntries).ToList();
+            if(segments.Count>3&&Regex.IsMatch(segments[3],"^s--[A-Za-z0-9_-]+--$"))segments.RemoveAt(3);
+            return uri.GetLeftPart(UriPartial.Authority)+"/"+string.Join('/',segments);
         }
-        catch(CloudMediaException){await DeleteAsync($"https://res.cloudinary.com/{Cloud}/image/{parameters["type"]}/v1/{publicId}.png");throw;}
-        catch(HttpRequestException){await DeleteAsync($"https://res.cloudinary.com/{Cloud}/image/{parameters["type"]}/v1/{publicId}.png");throw new CloudMediaException("Không kết nối được Cloudinary.");}
+        catch(CloudMediaException){await DeleteAsync($"https://res.cloudinary.com/{Cloud}/image/{deliveryType}/v1/{publicId}.png");throw;}
+        catch(HttpRequestException){await DeleteAsync($"https://res.cloudinary.com/{Cloud}/image/{deliveryType}/v1/{publicId}.png");throw new CloudMediaException("Không kết nối được Cloudinary.");}
         catch(OperationCanceledException)when(!ct.IsCancellationRequested){throw new CloudMediaException("Upload Cloudinary quá thời gian.");}
         catch(Exception e)when(e is JsonException or KeyNotFoundException or InvalidOperationException){throw new CloudMediaException("Phản hồi Cloudinary không hợp lệ.");}
     }

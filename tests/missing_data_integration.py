@@ -35,7 +35,7 @@ def main():
  passed.append('Bug reporter and linked Task metadata')
  file=upload(f'/api/v1/tasks/{tid}/attachments',m,[('real-name.png',png())])['data']['items'][0]
  assert file['originalFileName']=='real-name.png' and file['mimeType']=='image/png' and file['fileSizeBytes']==len(png()) and file['uploadedByName']
- stored=sql(f"SELECT FilePath FROM dbo.Attachment WHERE AttachmentId={file['attachmentId']}");assert stored.startswith('https://res.cloudinary.com/') and '/authenticated/' in stored
+ stored=sql(f"SELECT FilePath FROM dbo.Attachment WHERE AttachmentId={file['attachmentId']}");assert stored.startswith('https://res.cloudinary.com/') and '/authenticated/' in stored and '/s--' not in stored
  assert file['previewUrl'].startswith('http://127.0.0.1:5162/') and read(file['previewUrl'],m)[0]==png()
  passed.append('Task image stored as Cloudinary URL with signed delivery and original metadata')
  call('GET',f"/api/v1/attachments/{file['attachmentId']}",outsider,expected=403,label='Cloud image metadata still project scoped')

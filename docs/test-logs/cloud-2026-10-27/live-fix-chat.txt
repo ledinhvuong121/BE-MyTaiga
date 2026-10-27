@@ -1,0 +1,26 @@
+PASS anonymous chat denied
+PASS self room rejected
+PASS private recipient must share project
+PASS create private room
+PASS member cannot create group
+PASS manager creates group
+PASS group rejects cross-project participant
+PASS member cannot manage participants
+PASS outsider history hidden
+PASS Admin no private chat bypass
+PASS send text
+PASS empty message rejected
+PASS oversized message rejected
+PASS history limit validation
+PASS mark messages read
+PASS file-only chat message
+PASS chat rejects executable
+PASS list room participants
+PASS member cannot remove participant
+PASS manager removes participant preserving messages
+PASS removed participant loses history
+PASS rejoin preserves message foreign keys
+PASS closed project group is read-only
+PASS departed member loses private room shared scope
+PASS departed member loses group history
+PASS ALL: 33 checks

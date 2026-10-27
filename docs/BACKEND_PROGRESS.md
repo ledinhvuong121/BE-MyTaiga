@@ -2,8 +2,9 @@
 
 Nhánh mới nhất be/cloudinary-missing-data. 722 kiểm tra qua 18 bộ đạt trên database
 thử và Cloudinary test double. Script 16 đã áp dụng vào ScrumbanDB thật ngày 27/10/2026 sau xác nhận của chủ dự án.
-Chưa cấu hình Cloudinary thật; ảnh cũ chưa chuyển. Đây là các bước còn lại,
-không coi hồi quy giả lập là upload cloud thật.
+Cloudinary thật đã kiểm thử upload/delivery cho avatar, Task, Chat. Đã chuyển 1 avatar cũ
+trong ScrumbanDB, giữ bản gốc. Sau sửa signed URL, 154 kiểm tra hồi quy liên quan đều đạt.
+Chi tiết: [Báo cáo cloud thật](CLOUDINARY_LIVE_REPORT_2026-10-27.md).
 
 [Báo cáo cập nhật](MISSING_DATA_UPDATE_REPORT_2026-10-27.md) · [Hợp đồng FE](FRONTEND_RESPONSE_CONTRACT.md)
 · [Cấu hình Cloudinary](CLOUDINARY_SETUP.md)

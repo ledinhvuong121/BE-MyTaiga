@@ -1,0 +1,28 @@
+PASS anonymous upload denied
+PASS outsider upload denied
+PASS Admin has no upload bypass
+PASS upload UTF-8 text
+PASS other Member cannot delete uploader file
+PASS executable rejected
+PASS fake PNG rejected
+PASS image extension/content mismatch rejected
+PASS fake PDF rejected
+PASS fake Office rejected
+PASS wrong Office container rejected
+PASS macro-bearing Office rejected
+PASS ZIP expanded metadata limit enforced
+PASS binary disguised as text rejected
+PASS invalid text encoding rejected
+PASS empty file rejected
+PASS more than ten files rejected
+PASS invalid batch atomic rollback
+PASS configured size limit enforced
+PASS config cannot enable executable uploads
+PASS valid image/Office/ZIP/PDF batch
+PASS client path sanitized
+PASS attachment page size validation
+PASS uploader removes file
+PASS Manager can remove project file
+PASS closed project upload denied
+PASS closed project deletion denied
+PASS ALL: 33 checks

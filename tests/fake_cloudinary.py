@@ -25,7 +25,8 @@ class Handler(BaseHTTPRequestHandler):
    ext='png' if content.startswith(b'\x89PNG') else 'jpg'
    public=params['public_id'];kind=params['type']
    with LOCK:ASSETS[(kind,public,ext)]=content;EVENTS.append({'action':'upload','type':kind,'public_id':public})
-   return self.reply(200,{'secure_url':f'https://res.cloudinary.com/mytaiga-test/image/{kind}/v1/{public}.{ext}','public_id':public,'resource_type':'image'})
+   signature_segment='s--test-signature--/' if kind=='authenticated' else ''
+   return self.reply(200,{'secure_url':f'https://res.cloudinary.com/mytaiga-test/image/{kind}/{signature_segment}v1/{public}.{ext}','public_id':public,'resource_type':'image'})
   if self.path.endswith('/destroy'):
    with LOCK:
     for k in list(ASSETS):

@@ -1,6 +1,6 @@
 # Backend MyTaiga — bàn giao Chương 2
 
-**Cập nhật 27/10:** nhánh be/cloudinary-missing-data. Chạy migration 16 trước khi dùng bản mới; Đã áp dụng migration 16 vào ScrumbanDB ngày 27/10/2026, xác minh schema và giữ nguyên số bản ghi. Ảnh mới upload Cloudinary, DB chỉ lưu URL. Cần cấu hình Cloudinary trước khi upload ảnh.
+**Cập nhật 27/10:** nhánh be/cloudinary-missing-data. Đã áp dụng migration 16 vào ScrumbanDB và kiểm thử Cloudinary thật cho avatar, ảnh Task, ảnh Chat. DB ảnh chỉ lưu URL cloud chuẩn. Đã chuyển 1 avatar cũ, giữ file gốc và mapping backup. Máy khác cần cấu hình Cloudinary riêng trong User Secrets. Xem [báo cáo cloud thật](../docs/CLOUDINARY_LIVE_REPORT_2026-10-27.md).
 
 - [Báo cáo cập nhật missing data](../docs/MISSING_DATA_UPDATE_REPORT_2026-10-27.md)
 - [Hợp đồng response frontend](../docs/FRONTEND_RESPONSE_CONTRACT.md)

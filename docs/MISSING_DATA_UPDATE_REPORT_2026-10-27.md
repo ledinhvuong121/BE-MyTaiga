@@ -11,10 +11,12 @@ Nguồn yêu cầu: MISSING_DATA_REPORT.md do frontend cung cấp, lưu bản đ
 để frontend hiện có không bị phá vỡ hợp đồng. Đã có migration SQL, công cụ chuyển
 ảnh cũ, hướng dẫn cấu hình và kiểm thử hồi quy.
 
-**Chưa hoàn tất vận hành trên dữ liệu thật:** máy chưa cấu hình tài khoản Cloudinary,
-chưa kiểm thử upload cloud thật; ảnh cũ chưa được tự chuyển lên cloud. Không coi test
-double là bằng chứng cloud thật. Script 16 đã áp dụng thành công vào ScrumbanDB ngày
-27/10/2026 sau khi chủ dự án đồng ý; 9 cột và 2 ràng buộc đã được xác minh.
+**Đã xác minh Cloudinary thật ngày 27/10/2026:** upload và delivery avatar, ảnh Task,
+ảnh Chat đều đạt. API end-to-end trên database riêng đạt 5 nhóm kiểm tra; ảnh riêng tư
+bị từ chối khi mở URL gốc. Đã chuyển 1 avatar cũ trong ScrumbanDB lên cloud và xác
+minh HTTP 200, giữ file gốc cùng bản sao mapping ngoài Git. Không có ảnh Task/chat cũ.
+Script 16 cũng đã áp dụng và xác minh 9 cột, 2 ràng buộc. Chi tiết và giới hạn tại
+[CLOUDINARY_LIVE_REPORT_2026-10-27.md](CLOUDINARY_LIVE_REPORT_2026-10-27.md).
 
 ## Đối chiếu các yêu cầu đã cập nhật
 
@@ -141,18 +143,14 @@ nhận với actor, quyền sửa theo người xem, snapshot changes, Cloudinar
 kiểm tra chữ ký và URL cloud, lỗi upload/rollback batch, giữ tags khi client cũ sửa,
 20 tags tiếng Việt, chat reply/edit/presence và chuyển avatar cũ có giữ bản sao.
 
-## Các bước còn cần trên tài khoản và database thật
+## Trạng thái vận hành sau kiểm thử thật
 
-1. Đã hoàn thành nâng schema ScrumbanDB bằng script 16; không cần chạy lại cho lần nâng này.
-2. Tạo/đăng nhập Cloudinary Console và chạy scripts/configure-cloudinary.ps1 trên máy.
-   Nhập CloudName, ApiKey, ApiSecret vào User Secrets; không gửi Secret qua chat/Git.
-3. Khởi động lại API và upload thử một avatar, một ảnh Task, một ảnh chat lên cloud thật.
-4. Kiểm tra URL/ảnh trong Cloudinary, database và frontend; sau đó chuyển ảnh cũ qua
-   công cụ Admin theo từng batch, xử lý mọi status lỗi hoặc thiếu file nguồn.
-
-Hướng dẫn từng bước: [CLOUDINARY_SETUP.md](CLOUDINARY_SETUP.md).
-Bước 1 đã hoàn tất; các bước Cloudinary thật 2–4 chưa hoàn tất. Kiểm thử tải, quota cloud và tích hợp toàn
-bộ UI frontend cũng chưa được thay thế bằng test chức năng backend.
+Đã cấu hình User Secrets, kiểm thử Cloudinary thật, chuyển ảnh cũ và giữ bản sao.
+Sau sửa xử lý signed secure_url, chạy lại 154 kiểm tra thuộc missing_data, auth,
+attachments, chat, notifications: tất cả đạt; không cộng các lượt lặp vào tổng 722.
+Máy khác phải cấu hình Cloudinary bằng User Secrets hoặc biến môi trường riêng.
+Kiểm thử tải/quota và tích hợp toàn bộ UI frontend chưa thuộc bằng chứng kiểm thử này.
+Hướng dẫn: [CLOUDINARY_SETUP.md](CLOUDINARY_SETUP.md).
 
 ## Mã nguồn bàn giao
 
