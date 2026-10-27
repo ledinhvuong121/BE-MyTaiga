@@ -1,0 +1,92 @@
+[
+  {
+    "result": "PASS ALL: 42 checks",
+    "suite": "projects",
+    "log": "test-logs/cloud-2026-10-27/projects.txt"
+  },
+  {
+    "result": "PASS ALL: 39 checks",
+    "suite": "members",
+    "log": "test-logs/cloud-2026-10-27/members.txt"
+  },
+  {
+    "result": "PASS ALL: 39 checks",
+    "suite": "departments",
+    "log": "test-logs/cloud-2026-10-27/departments.txt"
+  },
+  {
+    "result": "PASS ALL: 38 checks",
+    "suite": "epics",
+    "log": "test-logs/cloud-2026-10-27/epics.txt"
+  },
+  {
+    "result": "PASS ALL: 43 checks",
+    "suite": "backlog",
+    "log": "test-logs/cloud-2026-10-27/backlog.txt"
+  },
+  {
+    "result": "PASS ALL: 58 checks",
+    "suite": "sprints",
+    "log": "test-logs/cloud-2026-10-27/sprints.txt"
+  },
+  {
+    "result": "PASS ALL: 61 checks",
+    "suite": "tasks",
+    "log": "test-logs/cloud-2026-10-27/tasks.txt"
+  },
+  {
+    "result": "PASS ALL: 34 checks",
+    "suite": "board",
+    "log": "test-logs/cloud-2026-10-27/board.txt"
+  },
+  {
+    "result": "PASS ALL: 32 checks",
+    "suite": "wip",
+    "log": "test-logs/cloud-2026-10-27/wip.txt"
+  },
+  {
+    "result": "PASS ALL: 61 checks",
+    "suite": "flow",
+    "log": "test-logs/cloud-2026-10-27/flow.txt"
+  },
+  {
+    "result": "PASS ALL: 64 checks",
+    "suite": "bugs",
+    "log": "test-logs/cloud-2026-10-27/bugs.txt"
+  },
+  {
+    "result": "PASS ALL: 28 checks",
+    "suite": "comments",
+    "log": "test-logs/cloud-2026-10-27/comments.txt"
+  },
+  {
+    "result": "PASS ALL: 33 checks",
+    "suite": "attachments",
+    "log": "test-logs/cloud-2026-10-27/attachments.txt"
+  },
+  {
+    "result": "PASS ALL: 23 checks",
+    "suite": "notifications",
+    "log": "test-logs/cloud-2026-10-27/notifications.txt"
+  },
+  {
+    "result": "PASS ALL: 33 checks",
+    "suite": "chat",
+    "log": "test-logs/cloud-2026-10-27/chat.txt"
+  },
+  {
+    "result": "PASS ALL: 29 checks",
+    "suite": "admin",
+    "log": "test-logs/cloud-2026-10-27/admin.txt"
+  },
+  {
+    "result": "PASS ALL: 36 checks",
+    "suite": "auth",
+    "log": "test-logs/cloud-2026-10-27/auth.txt"
+  },
+  {
+    "result": "PASS ALL: 29 checks",
+    "suite": "missing_data",
+    "log": "test-logs/cloud-2026-10-27/missing_data.txt"
+  }
+]

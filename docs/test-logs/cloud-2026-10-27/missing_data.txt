@@ -1,0 +1,11 @@
+PASS Task tags and story points editable
+PASS tag length validation
+PASS negative story points rejected
+PASS Epic color validation
+PASS Cloud image metadata still project scoped
+PASS Cloud upload failure controlled 503
+PASS Cloud batch rollback
+PASS only sender can edit message
+PASS migration restricted to Admin
+PASS migration dry run available
+PASS ALL: 29 checks

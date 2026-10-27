@@ -1,0 +1,28 @@
+PASS anonymous comment denied
+PASS outsider comment denied
+PASS Admin has no comment bypass
+PASS blank
+PASS too long
+PASS foreign mention
+PASS overflow mention
+PASS more than 20 mentions
+PASS create mentioned comment
+PASS Manager cannot edit other author
+PASS Member cannot delete other author
+PASS author edits own comment
+PASS new mention on edit notifies once
+PASS plain comment still notifies assignee
+PASS invalid page
+PASS oversized page
+PASS page overflow
+PASS outsider comment detail denied
+PASS configured comment ceiling
+PASS author deletes own comment
+PASS deleted comment missing
+PASS departed author loses access
+PASS departed author cannot delete
+PASS closed project comment denied
+PASS closed project comments readable
+PASS deleted project comments hidden
+PASS invalid comment id
+PASS ALL: 28 checks

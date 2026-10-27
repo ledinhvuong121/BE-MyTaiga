@@ -30,9 +30,11 @@ def main():
         import json
         return json.loads(result)
     result=avatar(png(),200);avatar_url=result['data']['avatar']
-    assert read(avatar_url,token)[0].startswith(b'\x89PNG')
-    passed.append('avatar upload re-encoded and authenticated download')
-    _,other=user();read(avatar_url,other,404);read(avatar_url,None,401);passed.append('avatar owner-only privacy')
+    assert avatar_url.startswith('https://res.cloudinary.com/')
+    assert sql(f'SELECT Avatar FROM dbo.[User] WHERE UserId={uid}')==avatar_url
+    passed.append('avatar upload returns Cloudinary URL and database stores URL only')
+    assert '/image/upload/' in avatar_url
+    passed.append('avatar URL is public identity image for member rendering')
     avatar(b'not a png',400);passed.append('avatar rejects invalid content')
     avatar(b'x'*(5*1024*1024+1),413);passed.append('avatar size limit')
     call('POST','/api/v1/auth/change-password',token,{'currentPassword':'wrong','newPassword':new,'confirmPassword':new},400,label='change requires correct old password')

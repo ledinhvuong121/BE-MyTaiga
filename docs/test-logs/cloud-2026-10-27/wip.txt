@@ -1,0 +1,31 @@
+PASS anonymous WIP read denied
+PASS outsider WIP read denied
+PASS Admin WIP read denied
+PASS Member WIP set denied
+PASS Member WIP removal denied
+PASS outsider WIP set denied
+PASS Admin WIP set denied
+PASS zero limit rejected
+PASS negative limit rejected
+PASS missing limit rejected
+PASS foreign column update denied
+PASS foreign column delete denied
+PASS lower limit shows existing overload
+PASS idempotent setting
+PASS TODO WIP blocks creation
+PASS overloaded column reorder allowed
+PASS move out of overloaded column
+PASS full destination blocks move
+PASS set second column limit
+PASS active WIP blocks move
+PASS remove WIP limit
+PASS creation allowed after removing limit
+PASS idempotent limit removal
+PASS invalid project WIP
+PASS invalid column id
+PASS closed project WIP change denied
+PASS closed project WIP removal denied
+PASS closed project WIP readable
+PASS deleted project WIP hidden
+PASS deleted project WIP alerts hidden
+PASS ALL: 32 checks

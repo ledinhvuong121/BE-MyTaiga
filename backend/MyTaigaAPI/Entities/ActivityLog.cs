@@ -1,10 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace MyTaigaAPI.Entities;
 
 public partial class ActivityLog
 {
+    public string? ChangesJson { get; set; }
+
     public long ActivityLogId { get; set; }
 
     public long? ProjectId { get; set; }

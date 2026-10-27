@@ -4,6 +4,8 @@ namespace MyTaigaAPI.DTOs.Projects;
 
 public class EpicRequest
 {
+    [RegularExpression(@"^#[0-9a-fA-F]{6}$")] public string? Color { get; set; }
+
     [Required, StringLength(255)]
     public string Title { get; set; } = string.Empty;
     [StringLength(10000)]

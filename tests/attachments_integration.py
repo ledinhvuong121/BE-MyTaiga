@@ -19,7 +19,7 @@ def upload(path,token,files,expected=201,label=None):
 def read(path,token,expected=200,extra=None):
     headers={'Authorization':'Bearer '+token} if token else {}
     headers.update(extra or {})
-    try:r=urllib.request.urlopen(urllib.request.Request(BASE+path,headers=headers),timeout=30)
+    try:r=urllib.request.urlopen(urllib.request.Request(path if path.startswith("http") else BASE+path,headers=headers),timeout=30)
     except urllib.error.HTTPError as error:r=error
     data=r.read();assert r.code==expected,f'{path}: {r.code}: {data[:400]}'
     return data,r.headers

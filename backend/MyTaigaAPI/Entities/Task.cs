@@ -1,10 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace MyTaigaAPI.Entities;
 
 public partial class Task
 {
+    public string? TagsJson { get; set; }
+    public int? StoryPoints { get; set; }
+
     public long TaskId { get; set; }
 
     public long ProjectId { get; set; }

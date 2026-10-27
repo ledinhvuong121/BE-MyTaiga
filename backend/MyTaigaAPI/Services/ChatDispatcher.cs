@@ -18,7 +18,7 @@ public class ChatDispatcher(IServiceScopeFactory scopes,IHubContext<ChatHub> hub
                     var users=await db.ChatParticipants.Where(p=>p.ChatRoomId==m.ChatRoomId&&p.IsActive&&p.User.Status==1).Select(p=>new{p.UserId,p.User.TokenVersion}).ToListAsync(ct);
                     foreach(var user in users)
                         if(await ChatScope.Visible(db,user.UserId).AnyAsync(r=>r.ChatRoomId==m.ChatRoomId,ct))
-                            await hub.Clients.Group(ChatHub.Group(user.UserId,user.TokenVersion)).SendAsync("message.new",ChatScope.Details(m),ct);
+                            await hub.Clients.Group(ChatHub.Group(user.UserId,user.TokenVersion)).SendAsync("message.new",await scope.ServiceProvider.GetRequiredService<ResponseEnricher>().EnrichAsync(ChatScope.Details(m),user.UserId,ct),ct);
                     m.PushedAt=DateTime.UtcNow;
                 }
                 if(rows.Count>0)await db.SaveChangesAsync(ct);

@@ -20,7 +20,7 @@ public class NotificationDispatcher(IServiceScopeFactory scopes,IHubContext<Noti
                     var recipient=await db.Users.Where(u=>u.UserId==n.UserId&&u.Status==1).Select(u=>new{u.UserId,u.TokenVersion}).SingleOrDefaultAsync(stoppingToken);
                     if(recipient is not null&&await NotificationScope.Visible(db,n.UserId).AnyAsync(v=>v.NotificationId==n.NotificationId,stoppingToken))
                     {
-                        var data=NotificationScope.Details(n);
+                        var data=await scope.ServiceProvider.GetRequiredService<ResponseEnricher>().EnrichAsync(NotificationScope.Details(n),recipient.UserId,stoppingToken);
                         var target=hub.Clients.Group(NotificationsHub.Group(recipient.UserId,recipient.TokenVersion));
                         await target.SendAsync("notificationReceived",data,stoppingToken);
                         await target.SendAsync("notification.new",data,stoppingToken);

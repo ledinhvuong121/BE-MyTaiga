@@ -14,11 +14,11 @@ public class CreateRoomRequest
     [StringLength(100)]public string? RoomName {get;set;}
     [MaxLength(100)]public List<long> ParticipantIds {get;set;}=[];
 }
-public class SendMessageRequest{[StringLength(5000)]public string? Content {get;set;}}
+public class SendMessageRequest{[Range(1,long.MaxValue)]public long? ReplyToMessageId {get;set;}[StringLength(5000)]public string? Content {get;set;}}
 public class ReadChatRequest{[Range(1,long.MaxValue)]public long? MessageId {get;set;}}
 public class ParticipantsRequest{[MinLength(1),MaxLength(100)]public List<long> UserIds {get;set;}=[];}
 [ApiController,Authorize,Route("api/v1/chat")]
-public class ChatController(ScrumbanDbContext db,TaskFileStore files,SystemConfigService config):ControllerBase
+public class ChatController(ScrumbanDbContext db,TaskFileStore files,CloudinaryImages cloud,SystemConfigService config):ControllerBase
 {
     long Me=>long.Parse(User.FindFirst("sub")!.Value);
     ObjectResult Reply(int code,string message,object? data=null)=>StatusCode(code,new{success=code<400,message,data});
@@ -97,26 +97,30 @@ public class ChatController(ScrumbanDbContext db,TaskFileStore files,SystemConfi
         return Reply(200,"Lấy tin nhắn thành công.",new{items=rows.Select(ChatScope.Details),hasMore=more,nextBefore=more?rows.Last().MessageId:(long?)null});
     }
     [HttpPost("rooms/{id:long}/messages"),Consumes("application/json")]
-    public Task<IActionResult> Send(long id,SendMessageRequest request,CancellationToken ct)=>SaveMessage(id,request.Content,[],ct);
+    public Task<IActionResult> Send(long id,SendMessageRequest request,CancellationToken ct)=>SaveMessage(id,request.Content,[],ct,request.ReplyToMessageId);
     [HttpPost("rooms/{id:long}/messages"),Consumes("multipart/form-data"),RequestSizeLimit(272629760),RequestFormLimits(MultipartBodyLengthLimit=272629760)]
-    public Task<IActionResult> SendFiles(long id,[FromForm]string? content,[FromForm]List<IFormFile> files,CancellationToken ct)=>SaveMessage(id,content,files,ct);
-    async Task<IActionResult> SaveMessage(long id,string? text,List<IFormFile> uploads,CancellationToken ct)
+    public Task<IActionResult> SendFiles(long id,[FromForm]string? content,[FromForm]List<IFormFile> files,CancellationToken ct,[FromForm]long? replyToMessageId=null)=>SaveMessage(id,content,files,ct,replyToMessageId);
+    async Task<IActionResult> SaveMessage(long id,string? text,List<IFormFile> uploads,CancellationToken ct,long? replyToMessageId=null)
     {
         text=text?.Trim();if((string.IsNullOrEmpty(text)&&uploads.Count==0)||text?.Length>Math.Min(5000,await config.GetPositiveIntAsync("MAX_COMMENT_LENGTH",ct))||uploads.Count>10)return Reply(400,"Tin nhắn cần nội dung tối đa 5000 ký tự hoặc tối đa 10 tệp.");
         await using var tx=await db.Database.BeginTransactionAsync(ct);var room=await Room(id,true,ct);if(room is null)return NotFound();
+        if(replyToMessageId.HasValue&&!await db.Messages.AnyAsync(m=>m.MessageId==replyToMessageId&&m.ChatRoomId==id,ct))return Reply(400,"Tin nhắn trả lời phải thuộc cùng phòng.");
         var maximum=Math.Min(25,await config.GetPositiveIntAsync("MAX_FILE_SIZE_MB",ct))*1048576L;
         var allowed=(await db.SystemConfigs.Where(c=>c.ConfigKey=="ALLOWED_FILE_EXTENSIONS").Select(c=>c.ConfigValue).SingleAsync(ct)).Split(',',StringSplitOptions.TrimEntries).ToHashSet(StringComparer.OrdinalIgnoreCase);
-        var paths=new List<string>();var committed=false;
+        var cloudUrls=new List<string>();var tempImages=new List<string>();var paths=new List<string>();var committed=false;
         try
         {
-            var message=new Message{ChatRoomId=id,SenderId=Me,Content=text,SentAt=DateTime.UtcNow};
+            var message=new Message{ChatRoomId=id,SenderId=Me,Content=text,ReplyToMessageId=replyToMessageId,SentAt=DateTime.UtcNow};
             foreach(var upload in uploads)
             {
                 var name=TaskFileStore.FileName(upload.FileName);var ext=Path.GetExtension(name).ToLowerInvariant();
                 if(upload.Length<=0||upload.Length>maximum||!allowed.Contains(ext)||!TaskFileStore.MimeTypes.ContainsKey(ext))return BadRequest();
                 Directory.CreateDirectory(files.Root);var key=Guid.NewGuid().ToString("N")+ext;var path=files.Resolve(key);paths.Add(path);
                 await using(var output=System.IO.File.Create(path))await upload.CopyToAsync(output,ct);TaskFileStore.Validate(path,ext);
-                message.MessageAttachments.Add(new(){FileName=name,FilePath=key,FileSize=upload.Length});
+                var stored=key;
+                if(ext is ".png" or ".jpg" or ".jpeg")
+                {await using var input=System.IO.File.OpenRead(path);stored=await cloud.UploadAsync(input,name,true,ct);cloudUrls.Add(stored);tempImages.Add(path);}
+                message.MessageAttachments.Add(new(){FileName=name,FilePath=stored,FileSize=upload.Length});
             }
             db.Messages.Add(message);await db.SaveChangesAsync(ct);
             var recipients=await db.ChatParticipants.Where(p=>p.ChatRoomId==id&&p.IsActive&&p.UserId!=Me&&p.User.Status==1).Select(p=>p.UserId).ToListAsync(ct);
@@ -124,7 +128,15 @@ public class ChatController(ScrumbanDbContext db,TaskFileStore files,SystemConfi
             await db.SaveChangesAsync(ct);await tx.CommitAsync(ct);committed=true;return Reply(201,"Gửi tin nhắn thành công.",ChatScope.Details(message));
         }
         catch(Exception e)when(e is ArgumentException or InvalidDataException or System.Text.DecoderFallbackException){return Reply(400,"Tệp không hợp lệ.");}
-        finally{if(!committed)foreach(var path in paths)try{System.IO.File.Delete(path);}catch(IOException){}}
+        finally{foreach(var path in tempImages)System.IO.File.Delete(path);if(!committed){foreach(var path in paths)try{System.IO.File.Delete(path);}catch(IOException){}foreach(var url in cloudUrls)await cloud.DeleteAsync(url);}}
+    }
+    [HttpPut("rooms/{id:long}/messages/{messageId:long}")]
+    public async Task<IActionResult> Edit(long id,long messageId,SendMessageRequest request,CancellationToken ct)
+    {
+        if(string.IsNullOrWhiteSpace(request.Content)||request.Content.Length>Math.Min(5000,await config.GetPositiveIntAsync("MAX_COMMENT_LENGTH",ct)))return BadRequest();
+        await using var tx=await db.Database.BeginTransactionAsync(ct);if(await Room(id,true,ct) is null)return NotFound();
+        var row=await db.Messages.SingleOrDefaultAsync(m=>m.MessageId==messageId&&m.ChatRoomId==id,ct);if(row is null)return NotFound();if(row.SenderId!=Me)return StatusCode(403);
+        row.Content=request.Content.Trim();row.EditedAt=DateTime.UtcNow;row.PushedAt=null;await db.SaveChangesAsync(ct);await tx.CommitAsync(ct);return Reply(200,"Sửa tin nhắn thành công.",ChatScope.Details(row));
     }
     [HttpPost("rooms/{id:long}/read")]
     public async Task<IActionResult> Read(long id,ReadChatRequest request,CancellationToken ct)
@@ -159,6 +171,7 @@ public class ChatController(ScrumbanDbContext db,TaskFileStore files,SystemConfi
     {
         var attachment=await db.MessageAttachments.Include(a=>a.Message).SingleOrDefaultAsync(a=>a.MessageAttachmentId==id,ct);
         if(attachment is null||await Room(attachment.Message.ChatRoomId,false,ct) is null)return NotFound();
+        if(cloud.IsCloud(attachment.FilePath)){Response.Headers.CacheControl="private, no-store";return Redirect(cloud.Delivery(attachment.FilePath,!preview));}
         string path;try{path=files.Resolve(attachment.FilePath);}catch(ArgumentException){return NotFound();}if(!System.IO.File.Exists(path))return NotFound();
         Response.Headers.CacheControl="private, no-store";Response.Headers["X-Content-Type-Options"]="nosniff";Response.Headers.ContentSecurityPolicy="sandbox; default-src 'none'";
         var extension=Path.GetExtension(path);

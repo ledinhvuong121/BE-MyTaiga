@@ -1103,8 +1103,70 @@
                         }
                       }
                     }
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "replyToMessageId": {
+                        "type": "integer",
+                        "format": "int64",
+                        "default": null
+                      }
+                    }
                   }
                 ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/chat/rooms/{id}/messages/{messageId}": {
+      "put": {
+        "tags": [
+          "Chat"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "messageId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendMessageRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendMessageRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendMessageRequest"
               }
             }
           },
@@ -2050,6 +2112,38 @@
             }
           }
         ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/media/migrate-images": {
+      "post": {
+        "tags": [
+          "MediaMigration"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MigrateImagesRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MigrateImagesRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/MigrateImagesRequest"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
             "description": "OK"
@@ -4783,6 +4877,11 @@
         ],
         "type": "object",
         "properties": {
+          "color": {
+            "pattern": "^#[0-9a-fA-F]{6}$",
+            "type": "string",
+            "nullable": true
+          },
           "title": {
             "maxLength": 255,
             "minLength": 0,
@@ -4848,6 +4947,38 @@
           },
           "password": {
             "type": "string"
+          }
+        }
+      },
+      "MigrateImagesRequest": {
+        "type": "object",
+        "properties": {
+          "afterUserId": {
+            "maximum": 9223372036854776000,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int64"
+          },
+          "afterAttachmentId": {
+            "maximum": 9223372036854776000,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int64"
+          },
+          "afterMessageAttachmentId": {
+            "maximum": 9223372036854776000,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int64"
+          },
+          "execute": {
+            "type": "boolean"
+          },
+          "batchSize": {
+            "maximum": 20,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
@@ -4990,6 +5121,13 @@
       "SendMessageRequest": {
         "type": "object",
         "properties": {
+          "replyToMessageId": {
+            "maximum": 9223372036854776000,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
           "content": {
             "maxLength": 5000,
             "minLength": 0,
@@ -5104,6 +5242,20 @@
             "format": "date-time",
             "nullable": true
           },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "storyPoints": {
+            "maximum": 10000,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
           "title": {
             "maxLength": 255,
             "minLength": 0,
@@ -5156,6 +5308,20 @@
         ],
         "type": "object",
         "properties": {
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "storyPoints": {
+            "maximum": 10000,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
           "title": {
             "maxLength": 255,
             "minLength": 0,
@@ -5241,6 +5407,9 @@
     },
     {
       "name": "FlowMetrics"
+    },
+    {
+      "name": "MediaMigration"
     },
     {
       "name": "Notifications"

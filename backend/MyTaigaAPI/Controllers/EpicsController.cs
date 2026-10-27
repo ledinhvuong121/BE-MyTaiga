@@ -17,7 +17,7 @@ public class EpicsController(ScrumbanDbContext db) : ControllerBase
         StatusCode(code, new { success = code < 400, message, data });
     private static object Details(Epic e) => new
     {
-        e.EpicId, e.ProjectId, e.Title, e.Description, e.Priority, e.Status, e.CreatedBy,
+        e.Color, e.EpicId, e.ProjectId, e.Title, e.Description, e.Priority, e.Status, e.CreatedBy,
         createdAt = DateTime.SpecifyKind(e.CreatedAt, DateTimeKind.Utc),
         updatedAt = e.UpdatedAt.HasValue ? DateTime.SpecifyKind(e.UpdatedAt.Value, DateTimeKind.Utc) : (DateTime?)null
     };
@@ -140,7 +140,7 @@ public class EpicsController(ScrumbanDbContext db) : ControllerBase
         }
         else
         {
-            epic.Title = request!.Title.Trim(); epic.Description = request.Description?.Trim();
+            epic.Color=request!.Color; epic.Title = request!.Title.Trim(); epic.Description = request.Description?.Trim();
             epic.Priority = request.Priority; epic.Status = request.Status;
             if (epicId.HasValue) epic.UpdatedAt = DateTime.UtcNow;
         }

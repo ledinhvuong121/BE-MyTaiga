@@ -1,0 +1,54 @@
+PASS anonymous Sprint denied
+PASS member cannot create Sprint
+PASS admin cannot create Sprint
+PASS outsider list denied
+PASS blank name
+PASS long name
+PASS long goal
+PASS bad date
+PASS reversed dates
+PASS long Sprint
+PASS missing dates
+PASS create always PLANNED
+PASS duplicate Sprint name
+PASS overlapping dates
+PASS multiple Sprints in one project
+PASS project id required
+PASS bad Sprint filter
+PASS page size validation
+PASS outsider cannot update
+PASS cannot change project scope
+PASS rename conflict rolls back
+PASS empty Sprint cannot start
+PASS duplicate IDs
+PASS zero PBI id
+PASS foreign PBI batch rolls back
+PASS member cannot plan
+PASS select PBI batch
+PASS duplicate planning denied
+PASS PBI cannot be in two open Sprints
+PASS remove planned PBI
+PASS repeat start denied
+PASS active Sprint cannot delete
+PASS active Sprint cannot remove scope silently
+PASS active dates immutable
+PASS update active goal
+PASS burndown reads actual event history
+PASS member cannot close
+PASS close Sprint
+PASS repeat close denied
+PASS closed Sprint planning denied
+PASS closed Sprint editing denied
+PASS carry unfinished PBI to later Sprint
+PASS delete planned Sprint with scoped PBI
+PASS deleted Sprint missing
+PASS planned Sprint with Task cannot delete
+PASS planned Sprint with metrics cannot delete
+PASS reject overflowing timeline
+PASS outsider Burndown denied
+PASS zero Sprint id
+PASS missing Sprint
+PASS closed project Sprint create denied
+PASS closed project progress readable
+PASS deleted project Sprint hidden
+PASS ALL: 58 checks

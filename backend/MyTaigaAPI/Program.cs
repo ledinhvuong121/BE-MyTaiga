@@ -12,15 +12,21 @@ var builder = WebApplication.CreateBuilder(args);
 
 var frontendOrigins = builder.Configuration.GetSection("Frontend:AllowedOrigins").Get<string[]>() ?? ["http://localhost:5173"];
 builder.Services.AddCors(options => options.AddPolicy("Frontend", policy => policy.WithOrigins(frontendOrigins).AllowAnyHeader().AllowAnyMethod().AllowCredentials()));
-builder.Services.AddControllers();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<FrontendAuditInterceptor>();
+builder.Services.AddScoped<ResponseEnricher>();
+builder.Services.AddScoped<FrontendResponseFilter>();
+builder.Services.AddSingleton<ChatPresence>();
+builder.Services.AddHttpClient<CloudinaryImages>(client => client.Timeout = TimeSpan.FromSeconds(60));
+builder.Services.AddControllers(options=>options.Filters.AddService<FrontendResponseFilter>());
 builder.Services.AddOpenApi();
 builder.Services.AddSignalR();
 builder.Services.AddHostedService<NotificationDispatcher>();
 // Browser WebSockets use access_token query; avoid recording bearer tokens in request-start logs.
 builder.Logging.AddFilter("Microsoft.AspNetCore.Hosting.Diagnostics", LogLevel.Warning);
 
-builder.Services.AddDbContext<ScrumbanDbContext>(options =>
-    options.UseSqlServer(
+builder.Services.AddDbContext<ScrumbanDbContext>((services,options) =>
+    options.AddInterceptors(services.GetRequiredService<FrontendAuditInterceptor>()).UseSqlServer(
         builder.Configuration.GetConnectionString("ScrumbanDb")
         ?? throw new InvalidOperationException(
             "Chưa cấu hình ConnectionStrings:ScrumbanDb.")));

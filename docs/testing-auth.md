@@ -1,3 +1,10 @@
+# Thay đổi ảnh ngày 27/10
+
+Avatar mới là URL Cloudinary public để hiển thị nhận diện. Luồng avatar local có xác
+thực chỉ giữ cho dữ liệu cũ chưa chuyển. Bộ auth đã cập nhật assertion theo hợp đồng
+cloud; chạy fake_cloudinary.py và start-isolated.ps1 -CloudinaryStub trước kiểm thử.
+Xem CLOUDINARY_SETUP.md và MISSING_DATA_UPDATE_REPORT_2026-10-27.md.
+
 # Kiểm thử tài khoản, avatar và CORS
 
 Chạy `python tests/auth_integration.py` với máy chủ test cô lập. Dữ liệu gồm tài khoản

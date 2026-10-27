@@ -4,6 +4,10 @@ namespace MyTaigaAPI.DTOs.Projects;
 
 public class TaskUpdateRequest
 {
+    public string[]? Tags { get; set; }
+    private int? storyPoints;
+    [System.Text.Json.Serialization.JsonIgnore] public bool StoryPointsSpecified { get; private set; }
+    [Range(0,10000)] public int? StoryPoints { get=>storyPoints; set{storyPoints=value;StoryPointsSpecified=true;} }
     [Required, StringLength(255)] public string Title { get; set; } = string.Empty;
     [StringLength(10000)] public string? Description { get; set; }
 }

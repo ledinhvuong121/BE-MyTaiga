@@ -1,10 +1,14 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace MyTaigaAPI.Entities;
 
 public partial class Notification
 {
+    public long? ActorId { get; set; }
+    public string? ActorRole { get; set; }
+    public string? TargetTitle { get; set; }
+
     public long NotificationId { get; set; }
 
     public long UserId { get; set; }

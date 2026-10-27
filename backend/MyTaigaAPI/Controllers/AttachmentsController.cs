@@ -11,12 +11,13 @@ namespace MyTaigaAPI.Controllers;
 
 [ApiController]
 [Authorize]
-public class AttachmentsController(ScrumbanDbContext db,TaskFileStore store,SystemConfigService config,ILogger<AttachmentsController> logger):ControllerBase
+public class AttachmentsController(ScrumbanDbContext db,TaskFileStore store,CloudinaryImages cloud,SystemConfigService config,ILogger<AttachmentsController> logger):ControllerBase
 {
     private long UserId=>long.Parse(User.FindFirst("sub")!.Value);
     private ObjectResult Reply(int code,string message,object? data=null)=>StatusCode(code,new{success=code<400,message,data});
-    private static object Details(Attachment a)=>new{a.AttachmentId,a.TaskId,a.FileName,a.FileSize,a.UploadedBy,
-        uploadedAt=DateTime.SpecifyKind(a.UploadedAt,DateTimeKind.Utc),previewUrl=$"/api/v1/attachments/{a.AttachmentId}/preview",downloadUrl=$"/api/v1/attachments/{a.AttachmentId}/download"};
+    private object Details(Attachment a)=>new{a.AttachmentId,a.TaskId,a.FileName,a.FileSize,a.UploadedBy,
+        url=cloud.IsCloud(a.FilePath)?cloud.Delivery(a.FilePath):null,
+        uploadedAt=DateTime.SpecifyKind(a.UploadedAt,DateTimeKind.Utc),previewUrl=cloud.IsCloud(a.FilePath)?cloud.Delivery(a.FilePath):$"/api/v1/attachments/{a.AttachmentId}/preview",downloadUrl=cloud.IsCloud(a.FilePath)?cloud.Delivery(a.FilePath,true):$"/api/v1/attachments/{a.AttachmentId}/download"};
     private async Task<int> Access(long projectId,bool write,CancellationToken ct)
     {
         var project=write?await db.Projects.FromSqlInterpolated($"""
@@ -42,7 +43,7 @@ public class AttachmentsController(ScrumbanDbContext db,TaskFileStore store,Syst
         await using var tx=await db.Database.BeginTransactionAsync(ct);
         var access=await Access(projectId.Value,true,ct);if(access!=200)return Denied(access);
         if(!await db.Tasks.AnyAsync(t=>t.TaskId==taskId,ct))return Reply(404,"Không tìm thấy Task.");
-        var paths=new List<string>();var rows=new List<Attachment>();var committed=false;
+        var uploadedCloud=new List<string>();var tempImages=new List<string>();var paths=new List<string>();var rows=new List<Attachment>();var committed=false;
         try
         {
             Directory.CreateDirectory(store.Root);
@@ -55,7 +56,12 @@ public class AttachmentsController(ScrumbanDbContext db,TaskFileStore store,Syst
                 await using(var output=new FileStream(path,FileMode.CreateNew,FileAccess.Write,FileShare.None))await file.CopyToAsync(output,ct);
                 if(new FileInfo(path).Length>maximum)return Reply(400,"Tệp vượt dung lượng cho phép.");
                 TaskFileStore.Validate(path,extension);
-                rows.Add(new Attachment{TaskId=taskId,FileName=name,FilePath=key,FileSize=file.Length,UploadedBy=UserId,UploadedAt=DateTime.UtcNow});
+                var stored=key;
+                if(extension is ".png" or ".jpg" or ".jpeg")
+                {
+                    await using var input=System.IO.File.OpenRead(path);stored=await cloud.UploadAsync(input,name,true,ct);uploadedCloud.Add(stored);tempImages.Add(path);
+                }
+                rows.Add(new Attachment{TaskId=taskId,FileName=name,FilePath=stored,FileSize=file.Length,UploadedBy=UserId,UploadedAt=DateTime.UtcNow});
             }
             db.Attachments.AddRange(rows);await db.SaveChangesAsync(ct);
             foreach(var row in rows)Log(projectId.Value,row.AttachmentId,"ATTACHMENT_UPLOADED");
@@ -65,7 +71,7 @@ public class AttachmentsController(ScrumbanDbContext db,TaskFileStore store,Syst
         catch(Exception ex) when(ex is ArgumentException or InvalidDataException or DecoderFallbackException)
         {return Reply(400,"Tệp không hợp lệ: "+ex.Message);}
         finally
-        {if(!committed)foreach(var path in paths)TryDelete(path);}
+        {foreach(var path in tempImages)TryDelete(path);if(!committed){foreach(var path in paths)TryDelete(path);foreach(var url in uploadedCloud)await cloud.DeleteAsync(url);}}
     }
     [HttpGet("api/v1/tasks/{taskId:long}/attachments")]
     public async Task<IActionResult> List(long taskId,[FromQuery,Range(1,int.MaxValue)]int page=1,[FromQuery,Range(1,100)]int pageSize=20,CancellationToken ct=default)
@@ -90,6 +96,7 @@ public class AttachmentsController(ScrumbanDbContext db,TaskFileStore store,Syst
         var row=await db.Attachments.AsNoTracking().Include(a=>a.Task).SingleOrDefaultAsync(a=>a.AttachmentId==id,ct);if(row is null)return Reply(404,"Không tìm thấy tệp.");
         var access=await Access(row.Task.ProjectId,false,ct);if(access!=200)return Denied(access);
         if(mode=="metadata")return Reply(200,"Lấy thông tin tệp thành công.",Details(row));
+        if(cloud.IsCloud(row.FilePath)){Response.Headers.CacheControl="private, no-store";return Redirect(cloud.Delivery(row.FilePath,mode=="download"));}
         string path;try{path=store.Resolve(row.FilePath);}catch(ArgumentException){return Reply(404,"Tệp lưu trữ không khả dụng.");}
         if(!System.IO.File.Exists(path))return Reply(404,"Tệp lưu trữ không khả dụng.");
         var extension=Path.GetExtension(path);var mime=TaskFileStore.MimeTypes[extension];
@@ -107,7 +114,8 @@ public class AttachmentsController(ScrumbanDbContext db,TaskFileStore store,Syst
         var row=await db.Attachments.SingleOrDefaultAsync(a=>a.AttachmentId==attachmentId,ct);if(row is null)return Reply(404,"Không tìm thấy tệp.");
         if(row.UploadedBy!=UserId&&!await db.ProjectMembers.AnyAsync(m=>m.ProjectId==projectId&&m.UserId==UserId&&m.Role.RoleName=="MANAGER",ct))return Reply(403,"Chỉ người tải lên hoặc Manager được xóa tệp.");
         db.Attachments.Remove(row);Log(projectId.Value,attachmentId,"ATTACHMENT_DELETED");await db.SaveChangesAsync(ct);await tx.CommitAsync(ct);
-        try{TryDelete(store.Resolve(row.FilePath));}catch(ArgumentException){/* Legacy metadata may not use the new store format. */}
+        if(cloud.IsCloud(row.FilePath))await cloud.DeleteAsync(row.FilePath);
+        else try{TryDelete(store.Resolve(row.FilePath));}catch(ArgumentException){/* Legacy metadata may not use the new store format. */}
         return Reply(200,"Xóa tệp thành công.");
     }
     private void TryDelete(string path)

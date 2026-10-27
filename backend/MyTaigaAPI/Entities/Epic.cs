@@ -1,10 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace MyTaigaAPI.Entities;
 
 public partial class Epic
 {
+    public string? Color { get; set; }
+
     public long EpicId { get; set; }
 
     public long ProjectId { get; set; }

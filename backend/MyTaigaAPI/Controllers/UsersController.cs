@@ -200,6 +200,7 @@ public async Task<IActionResult> UpdateMe(
 public async Task<IActionResult> UpdateAvatar(
     [FromForm] UpdateAvatarRequest request,
     [FromServices] AvatarImageService imageService,
+    [FromServices] CloudinaryImages cloud,
     [FromServices] IWebHostEnvironment environment,
     CancellationToken cancellationToken)
 {
@@ -241,43 +242,17 @@ public async Task<IActionResult> UpdateAvatar(
         });
     }
 
-    var directory = _configuration["Storage:AvatarsRoot"] ?? Path.Combine(
-        environment.ContentRootPath, "App_Data", "avatars");
-
-    Directory.CreateDirectory(directory);
-
-    var fileName = $"{Guid.NewGuid():N}.png";
-    var filePath = Path.Combine(directory, fileName);
-    var avatarUrl = $"/api/v1/users/me/avatar/{fileName}";
-
+    await using var input=new MemoryStream(imageBytes);
+    var avatarUrl=await cloud.UploadAsync(input,"avatar.png",false,cancellationToken);
+    var old=user.Avatar;
     try
     {
-        await System.IO.File.WriteAllBytesAsync(
-            filePath, imageBytes, cancellationToken);
-
-        user.Avatar = avatarUrl;
-        user.UpdatedAt = DateTime.UtcNow;
-
-        _db.ActivityLogs.Add(new ActivityLog
-        {
-            UserId = userId,
-            Action = "AVATAR_UPDATED",
-            EntityType = "USER",
-            EntityId = userId,
-            Description = "Cập nhật ảnh đại diện.",
-            CreatedAt = DateTime.UtcNow
-        });
-
+        user.Avatar=avatarUrl;user.UpdatedAt=DateTime.UtcNow;
+        _db.ActivityLogs.Add(new ActivityLog{UserId=userId,Action="AVATAR_UPDATED",EntityType="USER",EntityId=userId,Description="Cập nhật avatar Cloudinary.",CreatedAt=DateTime.UtcNow});
         await _db.SaveChangesAsync(cancellationToken);
     }
-    catch
-    {
-        // Dọn file mới nếu lưu file hoặc database thất bại.
-        if (System.IO.File.Exists(filePath))
-            System.IO.File.Delete(filePath);
-
-        throw;
-    }
+    catch{await cloud.DeleteAsync(avatarUrl);throw;}
+    if(old is not null&&cloud.IsCloud(old))await cloud.DeleteAsync(old);
 
     return Ok(new
     {

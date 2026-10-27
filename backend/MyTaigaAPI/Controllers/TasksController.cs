@@ -20,7 +20,7 @@ public class TasksController(ScrumbanDbContext db, SystemConfigService config) :
     private static object Details(WorkTask t) => new
     {
         t.TaskId,t.ProjectId,t.SprintId,t.EpicId,t.ParentTaskId,t.AssigneeId,t.ReporterId,t.Title,t.Description,
-        t.Priority,t.Status,deadline=Utc(t.Deadline),t.ProgressPercent,t.Position,
+        t.Priority,t.Status,t.StoryPoints,t.TagsJson,deadline=Utc(t.Deadline),t.ProgressPercent,t.Position,
         startedAt=Utc(t.StartedAt),completedAt=Utc(t.CompletedAt),createdAt=Utc(t.CreatedAt),updatedAt=Utc(t.UpdatedAt)
     };
     private async Task<int> Access(long projectId,bool write,bool manager,CancellationToken ct)
@@ -86,7 +86,7 @@ public class TasksController(ScrumbanDbContext db, SystemConfigService config) :
 
     private async Task<IActionResult> CreateCore(long projectId,TaskCreateRequest request,CancellationToken ct)
     {
-        if(string.IsNullOrWhiteSpace(request.Title))return Reply(400,"Tiêu đề không được trống.");
+        if(request.Tags is not null&&(request.Tags.Length>20||request.Tags.Any(x=>string.IsNullOrWhiteSpace(x)||x.Trim().Length>50))||string.IsNullOrWhiteSpace(request.Title))return Reply(400,"Tiêu đề không được trống.");
         await using var tx=await db.Database.BeginTransactionAsync(ct);
         var advanced=request.ParentTaskId.HasValue||request.AssigneeId.HasValue||request.Deadline.HasValue||request.Priority!="MEDIUM";
         var access=await Access(projectId,true,advanced,ct);if(access!=200)return Denied(access);
@@ -117,7 +117,7 @@ public class TasksController(ScrumbanDbContext db, SystemConfigService config) :
         if(maxPosition==int.MaxValue)return Reply(409,"Vị trí cột vượt phạm vi hỗ trợ.");
         var item=new WorkTask
         {
-            ProjectId=projectId,ReporterId=UserId,Title=request.Title.Trim(),Description=request.Description?.Trim(),
+            ProjectId=projectId,ReporterId=UserId,Title=request.Title.Trim(),TagsJson=System.Text.Json.JsonSerializer.Serialize((request.Tags??[]).Select(x=>x.Trim()).Distinct()),StoryPoints=request.StoryPoints,Description=request.Description?.Trim(),
             SprintId=request.SprintId,EpicId=request.EpicId,ParentTaskId=request.ParentTaskId,AssigneeId=request.AssigneeId,
             Priority=request.Priority,Deadline=request.Deadline?.UtcDateTime,Status="TODO",Position=maxPosition+1,CreatedAt=DateTime.UtcNow
         };
@@ -145,7 +145,7 @@ public class TasksController(ScrumbanDbContext db, SystemConfigService config) :
         DateTimeOffset? deadline,int? progress,CancellationToken ct)
     {
         if(taskId<=0)return Reply(400,"Mã Task không hợp lệ.");
-        if(request is not null&&string.IsNullOrWhiteSpace(request.Title))return Reply(400,"Tiêu đề không được trống.");
+        if(request is not null&&(request.Tags is not null&&(request.Tags.Length>20||request.Tags.Any(x=>string.IsNullOrWhiteSpace(x)||x.Trim().Length>50))||string.IsNullOrWhiteSpace(request.Title)))return Reply(400,"Tiêu đề không được trống.");
         var projectId=await db.Tasks.Where(t=>t.TaskId==taskId).Select(t=>(long?)t.ProjectId).SingleOrDefaultAsync(ct);
         if(!projectId.HasValue)return Reply(404,"Không tìm thấy Task.");
         await using var tx=await db.Database.BeginTransactionAsync(ct);
@@ -159,7 +159,7 @@ public class TasksController(ScrumbanDbContext db, SystemConfigService config) :
                 return Reply(409,"Task còn Subtask/Bug/bình luận/tệp đính kèm; không thể xóa.");
             db.Tasks.Remove(item);
         }
-        else if(operation=="UPDATE"){item.Title=request!.Title.Trim();item.Description=request.Description?.Trim();}
+        else if(operation=="UPDATE"){item.Title=request!.Title.Trim();item.Description=request.Description?.Trim();if(request.StoryPointsSpecified)item.StoryPoints=request.StoryPoints;if(request.Tags is not null)item.TagsJson=System.Text.Json.JsonSerializer.Serialize((request.Tags??[]).Select(x=>x.Trim()).Distinct());}
         else if(operation=="ASSIGN")
         {
             if(!await ValidAssignee(projectId.Value,assignee,ct))return Reply(409,"Người thực hiện phải là thành viên đang hoạt động.");

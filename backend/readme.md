@@ -1,5 +1,12 @@
 # Backend MyTaiga — bàn giao Chương 2
 
+**Cập nhật 27/10:** nhánh be/cloudinary-missing-data. Chạy migration 16 trước khi dùng bản mới; ScrumbanDB thật hiện chưa áp dụng vì đang chờ xác nhận. Ảnh mới upload Cloudinary, DB chỉ lưu URL. Cần cấu hình Cloudinary trước khi upload ảnh.
+
+- [Báo cáo cập nhật missing data](../docs/MISSING_DATA_UPDATE_REPORT_2026-10-27.md)
+- [Hợp đồng response frontend](../docs/FRONTEND_RESPONSE_CONTRACT.md)
+- [Cấu hình Cloudinary và chuyển ảnh cũ](../docs/CLOUDINARY_SETUP.md)
+
+
 ASP.NET Core net9.0, EF Core, SQL Server; chỉ backend. Nhánh mới nhất kế thừa các
 nhánh chức năng trước. `main` không tự cập nhật nếu chưa merge.
 
@@ -12,9 +19,9 @@ nhánh chức năng trước. `main` không tự cập nhật nếu chưa merge.
 
 Cần .NET SDK hỗ trợ net9.0, SQL Server và sqlcmd/SSMS.
 Trên máy chưa có ScrumbanDB, chạy các script trong Database theo thứ tự:
-01, 02, 03, 07, 08, 09, 10, 11, 12, 13, 14, 15.
+01, 02, 03, 07, 08, 09, 10, 11, 12, 13, 14, 15, 16.
 01 tạo database, 02 tạo logic, 03 nạp vai trò/cấu hình/Admin; không chạy lại 01–03
-trên database có dữ liệu. Các script 07–15 nâng cấp theo thứ tự; sao lưu trước khi
+trên database có dữ liệu. Các script 07–16 nâng cấp theo thứ tự; sao lưu trước khi
 áp dụng trên môi trường có dữ liệu quan trọng. sqlcmd cần `-I -b`.
 Các số 04–06 không cần cho bản cài mới; dữ liệu mẫu và mật khẩu cá nhân không đưa lên Git.
 Admin seed có hash giữ chỗ: sinh hash bằng PasswordTool và cập nhật PasswordHash cho
@@ -79,7 +86,9 @@ Database thử độc lập, không chạy script test trên ScrumbanDB thật.
 
 ```powershell
 # Terminal 1, sau khi chuẩn bị database test theo docs/testing-projects.md
-.\tests\start-isolated.ps1
+python .\tests\fake_cloudinary.py
+# Terminal riêng cho API test
+.\tests\start-isolated.ps1 -CloudinaryStub
 # Terminal 2
 .\tests\run-all.ps1
 ```

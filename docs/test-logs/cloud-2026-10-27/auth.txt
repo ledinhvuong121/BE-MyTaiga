@@ -1,0 +1,28 @@
+PASS register actual database user
+PASS duplicate register rejected
+PASS email syntax validation
+PASS registration password confirmation
+PASS wrong password rejected
+PASS correct password login
+PASS profile requires JWT
+PASS profile own identity
+PASS profile update persists
+PASS phone validation
+PASS change requires correct old password
+PASS password change succeeds
+PASS change revokes old JWT
+PASS old password no longer works
+PASS new request invalidates old reset token
+PASS reset confirmation required
+PASS reset via emailed link token succeeds
+PASS reset token single use
+PASS reset revokes prior JWT
+PASS expired reset token rejected
+PASS Admin locks user
+PASS locked user JWT denied
+PASS Admin unlocks user
+PASS unlock does not restore old token
+PASS logout succeeds
+PASS logout revokes JWT
+PASS locked user cannot login with correct password
+PASS ALL: 36 checks

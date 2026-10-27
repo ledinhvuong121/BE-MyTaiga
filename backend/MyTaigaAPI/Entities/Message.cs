@@ -1,10 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace MyTaigaAPI.Entities;
 
 public partial class Message
 {
+    public DateTime? EditedAt { get; set; }
+    public long? ReplyToMessageId { get; set; }
+
     public DateTime? PushedAt { get; set; }
 
     public long MessageId { get; set; }

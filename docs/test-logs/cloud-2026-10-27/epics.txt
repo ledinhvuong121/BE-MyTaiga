@@ -1,0 +1,37 @@
+PASS anonymous epic list denied
+PASS outsider epic list denied
+PASS member epic create denied
+PASS admin epic create denied
+PASS blank title
+PASS long title
+PASS invalid priority
+PASS invalid status
+PASS create epic
+PASS invalid epic page
+PASS invalid status filter
+PASS outsider epic detail denied
+PASS member epic update denied
+PASS member epic delete denied
+PASS update epic
+PASS empty progress
+PASS progress with actual work
+PASS linked epic deletion blocked
+PASS member pbi link denied
+PASS cross-project pbi link denied
+PASS cross-project task link denied
+PASS move pbi epic
+PASS link task epic
+PASS duplicate task link
+PASS duplicate pbi link
+PASS invalid link epic id
+PASS missing task link
+PASS missing pbi link
+PASS delete empty epic
+PASS deleted epic missing
+PASS invalid epic id
+PASS closed project epic create denied
+PASS closed project link denied
+PASS closed project progress readable
+PASS deleted project epics hidden
+PASS deleted project progress hidden
+PASS ALL: 38 checks
