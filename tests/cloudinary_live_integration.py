@@ -41,4 +41,3 @@ def main():
     passed('Chat image API stores cloud URL; signed preview/download return correct bytes')
     save();print('PASS ALL:',len(checks),'live API checks; cleanup manifest saved without credentials')
 if __name__=='__main__':main()
-
