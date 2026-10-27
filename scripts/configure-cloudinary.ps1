@@ -16,8 +16,14 @@ try{
  }while($invalid)
  $values=@{'Cloudinary:ApiSecret'=$plain}
  if(-not $SecretOnly){$values['Cloudinary:CloudName']=$cloudName;$values['Cloudinary:ApiKey']=$apiKey}
- $values | ConvertTo-Json -Compress | dotnet user-secrets set --project $project
- if($LASTEXITCODE -ne 0){throw 'Không lưu được cấu hình.'}
+ # Windows PowerShell may otherwise prepend a UTF-8 BOM to native stdin.
+ $previousOutputEncoding=$OutputEncoding
+ try{
+  $OutputEncoding=New-Object System.Text.UTF8Encoding($false)
+  $values | ConvertTo-Json -Compress | dotnet user-secrets set --project $project
+  if($LASTEXITCODE -ne 0){throw 'Không lưu được cấu hình.'}
+ }
+ finally{$OutputEncoding=$previousOutputEncoding}
  Write-Host 'Đã lưu cấu hình riêng trên máy. Dừng API bằng Ctrl+C rồi chạy lại để dùng cấu hình mới.'
 }
 finally{Remove-Variable plain,secret,apiKey,values -ErrorAction SilentlyContinue}
