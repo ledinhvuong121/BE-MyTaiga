@@ -12,9 +12,9 @@ Nguồn yêu cầu: MISSING_DATA_REPORT.md do frontend cung cấp, lưu bản đ
 ảnh cũ, hướng dẫn cấu hình và kiểm thử hồi quy.
 
 **Chưa hoàn tất vận hành trên dữ liệu thật:** máy chưa cấu hình tài khoản Cloudinary,
-chưa kiểm thử upload cloud thật. Script 16 chưa được áp dụng vào ScrumbanDB thật;
-ảnh cũ chưa được tự chuyển lên cloud. Không coi test double là bằng chứng cloud thật.
-Trước khi chạy code mới với ScrumbanDB, phải hoàn thành bước nâng schema đã được duyệt.
+chưa kiểm thử upload cloud thật; ảnh cũ chưa được tự chuyển lên cloud. Không coi test
+double là bằng chứng cloud thật. Script 16 đã áp dụng thành công vào ScrumbanDB ngày
+27/10/2026 sau khi chủ dự án đồng ý; 9 cột và 2 ràng buộc đã được xác minh.
 
 ## Đối chiếu các yêu cầu đã cập nhật
 
@@ -79,9 +79,10 @@ Admin có POST /api/v1/admin/media/migrate-images để chuyển ảnh cũ theo 
 Cập nhật URL có điều kiện để không ghi đè avatar/tệp đã đổi đồng thời. Ảnh mất file
 gốc báo SOURCE_MISSING, không tự tạo ảnh thay thế.
 
-**Trạng thái database thật:** kiểm duyệt tự động từ chối áp dụng script 16 vào
-ScrumbanDB vì chưa có xác nhận riêng cho việc thay đổi database thật. Lệnh không
-được thực thi. Cần chủ dự án cho phép áp dụng migration trước bước này.
+**Trạng thái database thật:** đã áp dụng script 16 vào ScrumbanDB ngày 27/10/2026
+sau khi chủ dự án yêu cầu chạy. Đã xác minh đủ 9 cột nullable và 2 CHECK constraint
+đang bật, trusted. Số bản ghi Task, Epic, Notification, ActivityLog, Message trước
+và sau giữ nguyên. [Biên bản kiểm tra](MIGRATION16_APPLIED_2026-10-27.md).
 
 ## Hợp đồng cho frontend
 
@@ -142,7 +143,7 @@ kiểm tra chữ ký và URL cloud, lỗi upload/rollback batch, giữ tags khi 
 
 ## Các bước còn cần trên tài khoản và database thật
 
-1. Xác nhận cho phép áp dụng script 16 vào ScrumbanDB. Chưa chạy API bản mới với schema cũ.
+1. Đã hoàn thành nâng schema ScrumbanDB bằng script 16; không cần chạy lại cho lần nâng này.
 2. Tạo/đăng nhập Cloudinary Console và chạy scripts/configure-cloudinary.ps1 trên máy.
    Nhập CloudName, ApiKey, ApiSecret vào User Secrets; không gửi Secret qua chat/Git.
 3. Khởi động lại API và upload thử một avatar, một ảnh Task, một ảnh chat lên cloud thật.
@@ -150,7 +151,7 @@ kiểm tra chữ ký và URL cloud, lỗi upload/rollback batch, giữ tags khi 
    công cụ Admin theo từng batch, xử lý mọi status lỗi hoặc thiếu file nguồn.
 
 Hướng dẫn từng bước: [CLOUDINARY_SETUP.md](CLOUDINARY_SETUP.md).
-Chưa tuyên bố các bước thật này hoàn tất. Kiểm thử tải, quota cloud và tích hợp toàn
+Bước 1 đã hoàn tất; các bước Cloudinary thật 2–4 chưa hoàn tất. Kiểm thử tải, quota cloud và tích hợp toàn
 bộ UI frontend cũng chưa được thay thế bằng test chức năng backend.
 
 ## Mã nguồn bàn giao
