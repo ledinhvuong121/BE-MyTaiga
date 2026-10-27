@@ -68,3 +68,15 @@ Nguồn API chính thức:
 - https://cloudinary.com/documentation/image_upload_api_reference
 - https://cloudinary.com/documentation/authentication_signatures
 - https://cloudinary.com/documentation/control_access_to_media
+
+## Nếu đã nhập nhầm dấu sao làm Secret
+
+Không sửa file script và không dán dấu sao đang hiển thị trên trang Cloudinary.
+Dùng chức năng Copy hoặc hiện giá trị API Secret thật trong View API Keys, rồi chạy:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "V:\University\Đồ Án Chuyên Ngành\BE-MyTaiga-Git\scripts\configure-cloudinary.ps1" -SecretOnly
+```
+
+Chế độ này giữ nguyên Cloud name/API Key, chỉ hỏi lại Secret và không chấp nhận
+chuỗi dấu sao. Nội dung nhập được che; không gửi giá trị thật vào chat hoặc ảnh chụp.
