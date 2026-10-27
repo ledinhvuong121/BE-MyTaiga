@@ -81,4 +81,4 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File "V:\University\Đồ Án
 Chế độ này giữ nguyên Cloud name/API Key, chỉ hỏi lại Secret và không chấp nhận
 chuỗi dấu sao. Nội dung nhập được che; không gửi giá trị thật vào chat hoặc ảnh chụp.
 
-Đã sửa lỗi 0xEF/BOM khi truyền JSON qua stdin trên Windows PowerShell 5.1. Script tạm dùng UTF-8 không BOM rồi khôi phục encoding của phiên gọi; đã kiểm tra lưu/đọc lại bằng khóa giả lập riêng, không dùng Secret thật.
+Đã bỏ hoàn toàn JSON stdin để tránh lỗi 0xEF/BOM trên Windows PowerShell. Script gọi dotnet user-secrets set cho từng khóa. Đã kiểm thử chính file configure-cloudinary.ps1 trên Windows PowerShell 5.1 với console UTF-8 BOM, xác nhận lưu và đọc lại bằng User Secrets giả lập riêng; không dùng hoặc in Secret thật.
