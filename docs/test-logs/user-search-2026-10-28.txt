@@ -1,0 +1,11 @@
+PASS anonymous search denied
+PASS USER searches email and name
+PASS ADMIN can use directory
+PASS invalid query rejected: page=0
+PASS invalid query rejected: pageSize=0
+PASS invalid query rejected: pageSize=101
+PASS invalid query rejected: page=2147483647
+PASS invalid query rejected: keyword=xxxxxxxxxxxxxxxxx
+PASS USER still cannot access admin directory
+PASS profile route still works
+PASS ALL: 17 checks

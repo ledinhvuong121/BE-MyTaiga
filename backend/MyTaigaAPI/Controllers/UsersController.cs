@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,37 @@ public class UsersController : ControllerBase
     {
         _db = db;
         _configuration = configuration;
+    }
+
+    // Directory for authenticated users; administrative account fields stay private.
+    [HttpGet]
+    public async Task<IActionResult> Search(
+        [FromQuery, StringLength(200)] string? keyword = null,
+        [FromQuery, Range(1, int.MaxValue)] int page = 1,
+        [FromQuery, Range(1, 100)] int pageSize = 20,
+        CancellationToken ct = default)
+    {
+        var skip = ((long)page - 1) * pageSize;
+        if (skip > int.MaxValue)
+            return BadRequest(new { success = false, message = "Trang vượt phạm vi hỗ trợ.", data = (object?)null });
+
+        var query = _db.Users.AsNoTracking().Where(user => user.Status == 1);
+        if (!string.IsNullOrWhiteSpace(keyword))
+        {
+            var term = keyword.Trim();
+            query = query.Where(user => user.FullName.Contains(term) || user.Email.Contains(term));
+        }
+        var total = await query.CountAsync(ct);
+        var items = await query.OrderBy(user => user.FullName).ThenBy(user => user.UserId)
+            .Skip((int)skip).Take(pageSize)
+            .Select(user => new { user.UserId, user.FullName, user.Email, avatarUrl = user.Avatar })
+            .ToListAsync(ct);
+        return Ok(new
+        {
+            success = true,
+            message = "Tìm kiếm tài khoản thành công.",
+            data = new { items, total, page, pageSize }
+        });
     }
 
     [HttpGet("me")]

@@ -97,3 +97,10 @@ Test chạy HTTP + SQL + filesystem + WebSocket thật, không dùng Gmail thậ
 Cấu hình test chỉ nằm trong tiến trình; thư/ảnh/tệp test ở App_Data/test-*.
 Kết quả và giới hạn được ghi trong báo cáo. Frontend hiển thị biểu đồ/màu/thu gọn
 cột và nhận link reset không nằm trong phần triển khai backend này.
+
+## Tìm kiếm tài khoản để thêm thành viên — 28/10/2026
+
+GET /api/v1/users?keyword=...&page=1&pageSize=20 dành cho mọi người đã đăng nhập.
+Response data.items gồm userId, fullName, email, avatarUrl; chỉ tài khoản đang hoạt động.
+Frontend dùng endpoint này thay route Admin trong popup tìm người.
+[Hợp đồng và kết quả kiểm thử](../docs/USER_SEARCH_REPORT_2026-10-28.md).
